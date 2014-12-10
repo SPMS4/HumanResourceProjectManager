@@ -1,0 +1,19 @@
+Login Page
+assume this is only for college
+
+Personal=profile 4 student 
+bussines=change to lecutre profile page.
+
+WHen not logged in
+Navbar=home about
+
+when logged in
+navbar = profile(home) Manage profile group page
+(lecutre will have a create group on navbar)
+
+Manage profile=simple list of textboxes that will be used to update data
+
+lecutre will be able to view all groupss though maanage groupss
+
+
+Create group,replace fill upload to giant ass textbox
