@@ -1,38 +1,37 @@
 <?php
-//connect to database host
-    $db = mysqli_connect("localhost", "root", "")
-      or die (mysql_error());
-      //connect to database
-      mysqli_select_db($db, "prjdatabase");
 
+require_once 'dbconfig.php';
+    $db = new PDO("mysql:host=$host;dbname=$dbname",
+                            $username, $password);
 
-     // $nameQuery = "SELECT uName, 
-     //          FROM users 
-    //           WHERE UserID=2";
-      
-    //  $Select_name = $db->query($nameQuery);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        session_start();
+        $Id=$_SESSION["Id"];
+        
+        $sql = "SELECT *
+                FROM users 
+                where UserID=$Id"; 
+       
 
-
-        $query = mysqli_query($db,"SELECT * 
-                                FROM users 
-                                where UserID=13");
-
-          while($data = mysqli_fetch_array($query))
-          { 
-          $name=$data['uName'];
+        foreach ($db->query($sql) as $data) {
+          $Id = $data['UserID'];
+          $name = $data['uName'];
           $CourseName=$data['CourseName'];
           $UserCurrentStatus=$data['UserCurrentStatus'];
           $Address=$data['Address'];
           $Email=$data['Email'];
           $county=$data['county'];
-          }
-               
-      //$course
-     // $status
-     // $address
-     // $email
-     // $county
+        }
+          
+                      if ($UserCurrentStatus == "lecturer") {
+          header('Location: http://localhost/updatedPrj300/profileLECUTER.php');
+            exit;
+        }
+        
+
 ?>
+<form id="popform" action="profile.php" method="POST">
 
 <!DOCTYPE html>
 <html>
@@ -90,10 +89,6 @@
                         <td>Status</td>
                         <td name="status"><?php echo $UserCurrentStatus ?></td>
                       </tr>
-                      <tr>
-                        <td>Date of Birth</td>
-                        <td>01/24/1988</td>
-                      </tr>
                    
                          <tr>
                              <tr>
@@ -115,14 +110,49 @@
                      
                     </tbody>
                   </table>
-                  
-                  <a href="groupmanage.html" class="btn btn-primary">Current Project</a>
-                  <a href="groupcreate.html" class="btn btn-primary">Create a group</a>
-                </div>
+     <p align="center"><a href="groupcreate.php" class="btn btn-primary">Create a group</a></p>
+         <!--<input type="submit" name="groupCreate" value="Create a Group" />       -->         </div>
               </div>
             </div>
-                
-                    </div>
+            <div class="profileLstBx">
+<?php
+if(!isset($_SESSION)) 
+          { 
+          session_start(); 
+          } 
+         $db = new PDO("mysql:host=$host;dbname=$dbname",
+                   $username, $password);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $sql = 'CALL SelectGroupsByUser(:exUserID)';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);     
+        $stmt->execute();
+
+        $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo "<select class='form-control' name='groupLst' size='5'></option>";
+        foreach ($arrVal as $key => $val) {
+            $GroupID = $val['GroupID'];
+            $GroupName = $val['GroupName'];
+            echo "<option value=$GroupID>$GroupName</option>"; 
+          }
+          echo "</select>";// Closing of list box
+          
+              if (isset($_POST['submit'])) 
+          {
+            $selected = $_POST['groupLst'];
+            echo "Group .$GroupID. name .$GroupName. and .$selected.";
+            unset($_SESSION['groupId']);
+            //then
+            $_SESSION["groupId"] = "$selected";
+            header('Location: http://localhost/updatedPrj300/Group.php');
+            exit; 
+          }
+
+?>
+      
+            </div>          
+      <input type="submit" class="btn btn-info" name="submit" value="view group" />
             
           </div>
         </div>
@@ -184,3 +214,4 @@
   </script> 
 
 </html>
+</form>

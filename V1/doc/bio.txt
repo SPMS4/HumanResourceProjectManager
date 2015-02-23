@@ -1,0 +1,11 @@
+pop up code on index.html got from http://www.formget.com/how-to-create-pop-up-contact-form-using-javascript/# 07/10/14
+Top nav bar found on http://getbootstrap.com/examples/navbar-static-top/
+index page carsoul tutroial found at http://bootstrapbay.com/blog/bootstrap-3-carousel-tutorial/
+Carousl css found at http://getbootstrap.com/examples/carousel/carousel.css
+Carsoul images found on http://pixabay.com/en/(free images)
+footer tutoiral found on https://www.youtube.com/watch?v=KxmLNctBi10
+Profile found http://bootsnipp.com/snippets/featured/simple-user-profile
+calendar found on http://fullcalendar.io/
+
+
+Book:php and mysql: AUothor:Mike Murach,Name Publisher:Mike Murach.

@@ -1,0 +1,42 @@
+@charset "utf-8";
+/* CSS Document */
+
+.backgroundColorClass
+{
+	background-color:#52419C;
+}
+
+#backgroundColorID
+{
+	background-color:#52419C;
+}
+
+.divColorClass
+{
+	background-color:#3A278F;
+}
+
+#divColorID
+{
+	background-color:#3A278F;
+	color:#FFF;
+}
+
+.ParaHeadFontColor
+{
+	color:#FFF;
+}
+
+#ParaHeadFontColor
+{
+	color:#FFF;
+}
+
+.profileLstBx
+{
+	float:left;
+	width:555px;
+}
+
+
+
