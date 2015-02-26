@@ -90,7 +90,7 @@ if ($stat == "lecturer") {
   }
   else{
     echo "you are student";
-    header('Location: http://localhost/updatedPrj300/profile.php');
+    header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             exit;
   }
 

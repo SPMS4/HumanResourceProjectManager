@@ -33,7 +33,7 @@ session_start();
             $_SESSION["Id"] = "$Id";
             echo "$Id";
 
-            header('Location: http://localhost/updatedPrj300/profile.php');
+            header('Location: http://localhost/HumanResourceProjectManager/profile.php');
                         exit;
         }
         else

@@ -25,7 +25,7 @@ require_once 'dbconfig.php';
         }
 
         if ($UserCurrentStatus == "students") {
-          header('Location: http://localhost/updatedPrj300/profileLECUTER.php');
+          header('Location: http://localhost/HumanResourceProjectManager/profileLECUTER.php');
             exit;
         }
 

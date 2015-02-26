@@ -9,7 +9,10 @@
         session_start();
         $Id=$_SESSION["Id"];
         $GroupId=$_SESSION["groupId"];
-        
+
+        $ar = array('Event 1', '2015-02-19', '2015-02-28' );
+         json_encode($ar);
+
         echo "$Id and group is $GroupId<br/>";
         try {
         // execute the stored procedure
@@ -145,13 +148,11 @@ echo "accept";
 <html>
 <head>
 	<title></title>
+
 </head>
 
-<!--<body onload="addCalanderEvent({title=<?php// echo "$taskTitle"; ?>;
-start=<?php// echo "$taskStartDate"; ?>;
-end=<?php// echo "$taskEndDate"; ?>;
-});">-->
-<body onload="addCalendarEvent()">
+<body>
+<!--<body onload="addCalanderEvent('myEvent', 2015-02-19, 2015-02-22)">-->
 
 <?php include 'Header.html'; ?>
 
@@ -312,27 +313,34 @@ end=<?php// echo "$taskEndDate"; ?>;
 <script src='Calender/CalCustom.js'></script>
 <link href="Css/jquery.timepicker.css" rel="stylesheet" />
 <script src="Calender/jquery.timepicker.js"></script>
-<script type="text/javascript">
-  window.onload = (function addCalanderEvent1( start, end, title)
-{
-  // title: "my event",
-    $var tTitle = "event";
-   // tTitle = <?php echo $taskTitle ?>
-    var eventObject = {
-    title: tTitle,
-    start: '2015-02-19',
-    end: '2015-02-20'
-    };
-
-    $('#calendar').fullCalendar('renderEvent', eventObject, true);
-    return eventObject;
-});
-</script>
 <!--<script src="Calender/jquery-ui-Datepicker/external/jquery/jquery.js"></script>
 <script src="Calender/jquery-ui-Datepicker/jquery-ui.js"></script>-->
 
 <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>-->
+  <script type="text/javascript">
+   
+  </script>
+<script type="text/javascript">
+var eventName = <?php echo json_encode($ar[0]) ?>;
+var eventstart = <?php echo json_encode($ar[1]) ?>;
+var eventEnd = <?php echo json_encode($ar[2]) ?>;
+alert("the event name is " +eventName +" start " + eventstart + " end " + eventEnd);
+
+window.onload = function addCalanderEvent( title, start, end)
+{
+    
+
+    var eventObject = {
+    title: eventName,
+    start: eventstart,
+    end: eventEnd
+    };
+
+    $('#calendar').fullCalendar('renderEvent', eventObject, true);
+    return eventObject;
+}
+</script>
 </html>
 </form>

@@ -141,17 +141,7 @@ document.getElementById('Link').disabled=false;
 });*/-->
 
 
-function addCalanderEvent( title, start, end)
-{
-    var eventObject = {
-    title: 'title',
-    start: '2015-02-23',
-    end: '2015-02-24'
-    };
 
-    $('#calendar').fullCalendar('renderEvent', eventObject, true);
-    return eventObject;
-}
 
 /*function addCalanderEvent(id, start, end, title, colour)
 {

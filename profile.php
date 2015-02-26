@@ -25,7 +25,7 @@ require_once 'dbconfig.php';
         }
           
                       if ($UserCurrentStatus == "lecturer") {
-          header('Location: http://localhost/updatedPrj300/profileLECUTER.php');
+          header('Location: http://localhost/HumanResourceProjectManager/profileLECUTER.php');
             exit;
         }
         
@@ -145,7 +145,7 @@ if(!isset($_SESSION))
             unset($_SESSION['groupId']);
             //then
             $_SESSION["groupId"] = "$selected";
-            header('Location: http://localhost/updatedPrj300/Group.php');
+            header('Location: http://localhost/HumanResourceProjectManager/Group.php');
             exit; 
           }
 

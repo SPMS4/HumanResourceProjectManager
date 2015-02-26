@@ -89,7 +89,7 @@ if ($stat == "lecturer") {
                             ";
                 $calendar_table = $db->query($calanderInsert);  
              }
-            // header('Location: http://localhost/updatedPrj300/profile.php');
+            // header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             //exit;
              
       } 
@@ -106,7 +106,7 @@ if ($stat == "lecturer") {
   //student cannot acces this page
   else{
     echo "you are student";
-    //header('Location: http://localhost/updatedPrj300/profile.php');
+    //header('Location: http://localhost/HumanResourceProjectManager/profile.php');
     //        exit;
   }
 
