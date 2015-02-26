@@ -140,5 +140,36 @@
   	  	height: 400px;
 	}
 	.popup form div{float:left; width:80px; text-align:left;}
+	
 	.popup form input{float:left; text-align:left;}
+
+	.popupupdate {
+	    background-color:ivory; 
+	    border:1px solid gray;
+	    position:fixed; 
+	    top:25%; 
+	    left:25%; 
+	    display:none; 
+   	 	padding: 0px 20px 10px 10px; 
+	    z-index:100;
+   	 	width: 800px;
+  	  	height: 400px;
+	}
+	.popupupdate form div{float:left; width:80px; text-align:left;}
+	.popupupdate form input{float:left; text-align:left;}
+
+	.popupdrop{
+	    background-color:ivory; 
+	    border:1px solid gray;
+	    position:fixed; 
+	    top:25%; 
+	    left:25%; 
+	    display:none; 
+   	 	padding: 0px 20px 10px 10px; 
+	    z-index:100;
+   	 	width: 800px;
+  	  	height: 400px;
+	}
+	.popupdrop form div{float:left; width:80px; text-align:left;}
+	.popupdrop form input{float:left; text-align:left;}
 </style>
