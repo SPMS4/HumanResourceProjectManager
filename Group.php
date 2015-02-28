@@ -11,7 +11,7 @@
         $GroupId=$_SESSION["groupId"];
 
         $ar = array('Event 1', '2015-02-19', '2015-02-28' );
-         json_encode($ar);
+       json_encode($ar);
 
         echo "$Id and group is $GroupId<br/>";
         try {
@@ -28,9 +28,12 @@
             $taskEndDate = $val['EndDate'];
             $taskStartDate = $val['StartDate'];
             $taskTitle = $val['Title'];
-            //echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
-            echo "$taskTitle";
+
+            json_encode($taskTitle);
+            json_encode($taskEndDate);
+            json_encode($taskStartDate);
         }//end foreach for task
+        json_encode($arrVal);
 
             //proc for event SelectEvent
         $sql = 'CALL SelectEvent(:exGroupID)';
@@ -73,11 +76,6 @@
 
 
 if (isset($_POST['acceptbut'])) {
-  ?>
-  <script type="text/javascript">
-    addCalanderEvent();
-  </script>
-  <?php
 // Start the session
 //session_start();
 echo "accept";
@@ -323,14 +321,16 @@ echo "accept";
    
   </script>
 <script type="text/javascript">
-var eventName = <?php echo json_encode($ar[0]) ?>;
-var eventstart = <?php echo json_encode($ar[1]) ?>;
-var eventEnd = <?php echo json_encode($ar[2]) ?>;
-alert("the event name is " +eventName +" start " + eventstart + " end " + eventEnd);
+var jsonTest = <?php echo json_encode($ar[0]) ?>;
+
 
 window.onload = function addCalanderEvent( title, start, end)
 {
-    
+  var eventName = <?php echo json_encode($taskTitle) ?>;
+  var eventstart = <?php echo json_encode($taskStartDate) ?>;
+  var eventEnd = <?php echo json_encode($taskEndDate) ?>;
+
+  alert("the event name is " +eventName +" start " + eventstart + " end " + eventEnd);
 
     var eventObject = {
     title: eventName,
