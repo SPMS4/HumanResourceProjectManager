@@ -1,7 +1,4 @@
 
-
-
-
 <?php
         require_once 'dbconfig.php';
         //DB Connection
@@ -12,15 +9,16 @@
         session_start();
         $Id=$_SESSION["Id"];
         $GroupId=$_SESSION["groupId"];
-        
-        echo "$Id and group is $GroupId";
-      //  $groupId=132;
+
+        $ar = array('Event 1', '2015-02-19', '2015-02-28' );
+       json_encode($ar);
+
+        echo "$Id and group is $GroupId<br/>";
         try {
-        $gId = 2;
         // execute the stored procedure
         $sql = 'CALL SelectTask(:exGroupID)';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':exGroupID', $gId, PDO::PARAM_INT);     
+        $stmt->bindParam(':exGroupID', $GroupId, PDO::PARAM_INT);     
         $stmt->execute();
         //$stmt->closeCursor();
         $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -30,74 +28,64 @@
             $taskEndDate = $val['EndDate'];
             $taskStartDate = $val['StartDate'];
             $taskTitle = $val['Title'];
-            echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
 
+            //json_encode($taskTitle);
+            //json_encode($taskEndDate);
+            //json_encode($taskStartDate);
         }//end foreach for task
+        json_encode($arrVal);
+        json_encode($taskTitle);
+        json_encode($taskEndDate);
+        json_encode($taskStartDate);
+
             //proc for event SelectEvent
         $sql = 'CALL SelectEvent(:exGroupID)';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':exGroupID', $gId, PDO::PARAM_INT);     
+        $stmt->bindParam(':exGroupID', $GroupId, PDO::PARAM_INT);     
         $stmt->execute();
         //$stmt->closeCursor();
         $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($arrVal as $key => $val) {
-            $taskId = $val['TaskEventID'];
-            $taskBackLog = $val['Backlog'];
-            $taskStartDate = $val['StartDate'];
-            $taskTitle = $val['Title'];
+            $eventId = $val['TaskEventID'];
+            $eventBackLog = $val['Backlog'];
+            $eventStartDate = $val['StartDate'];
+            $eventTitle = $val['Title'];
             echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
-        }//end foreach for event
        }
+   //    echo '<script type="text/javascript">'
+   //         , 'addCalanderEvent();'
+   //        , '</script>';
+
+       //project details
+         
+         $sql = 'CALL ProjectDetailsForGroup(:exGroupID)';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':exGroupID', $GroupId, PDO::PARAM_INT);     
+        $stmt->execute();
+        //$stmt->closeCursor();
+        $arrPrj = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($arrPrj as $key => $prj) {
+            $prjId = $prj['ProjectID'];
+            $prjDesc = $prj['Description'];
+            $prjName = $prj['ProjectName'];
+         }
+           // echo "$prjId and $prjName";
+
+     }
       catch (PDOException $pe){
         die("<br/>caught Error occurred:" . $pe->getMessage());
       } 
-        // ID will come from session!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     //	try {
- 
-        // execute the stored procedure
-       // $sql = 'CALL SelectTask0(:exGroupID,@iTaskEventID,@iEndDate,@iStartDate,@iDescription,@iTitle,@iBacklog';
-     //   $stmt = $db->prepare($sql);
-      //  $stmt->bindParam(':exGroupID', $groupId, PDO::PARAM_INT);
-     //   $stmt->execute();
-     //   $stmt->closeCursor();
-     //   $sql = 'CALL inoutexampleproc(:exUserID, @ifName, @iStatus)';
-        
- 
-        // execute the second query to get values from OUT parameter
-      //  $resu = $db->query("SELECT @ifName AS name, @iStatus AS status")->fetch(PDO::FETCH_ASSOC);
-     //   $r = $db->query("SELECT @iTaskEventID as TaskEventID,@iEndDate,@iStartDate,@iDescription,@iTitle,@iBacklog")->fetch(PDO::FETCH_ASSOC);
-     //   while ($r >= 0) {
-      //      printf('ID: %d, start: %d, end: %d, isescription: %d,title: %d, backlog %d',
-      //          $r['@TaskEventID'],
-      //          $r['@iEndDate'],
-      //          $r['@iStartDate'],
-      //          $r['@iDescription'],
-       //         $r['@iTitle'],
-       //         $r['@iBacklog']);
-       // }
-       // while($row = mysql_fetch_array($result)){
-	//echo $row['name']. " - ". $row['age'];
-	//echo "<br />";
 
-  //  } catch (PDOException $pe) {
-   //     die("Error occurred:" . $pe->getMessage());
-   // }
-			  
-		//	  foreach ($db->query($sql) as $data) {
-          
-        //}
-       //echo "$taskId and $taskStartDate";
+
 
 if (isset($_POST['acceptbut'])) {
 // Start the session
-session_start();
+//session_start();
 echo "accept";
 		//  try {        
          //INSERT SPROC
-        $groupId=2;
         //$selectevent = $_POST['selectevent'];
         $taskEventTitle = $_POST['Title'];
-
         $backlog = $_POST['backlog'];
         if ($backlog == null) {
         	$backlogResult = 0;
@@ -109,64 +97,69 @@ echo "accept";
 
         $taskEventStart = $_POST['Startdate'];
         $taskEventEnd = $_POST['Enddate'];
+             echo "<br>START DATE : $taskEventStart</br>";
+        $startParsed = date_parse($taskEventStart);
         //$taskEventTime = $_POST['endTimepicker'];
-        $taskEventDescription = $_POST['Note'];
+       // $taskEventDescription = $_POST['Note'];
+
+       // $input = "2015-02-19";
+       // $info = date_parse($input);
            
-        $sql = 'CALL InsertTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exDesc)';
+        $sql = 'CALL InsertTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
         $stmt->bindParam(':exBacklog', $backlogResult, PDO::PARAM_LOB );
         $stmt->bindParam(':exStartDate', $taskEventStart, PDO::PARAM_LOB);
         $stmt->bindParam(':exEndDate', $taskEventEnd, PDO::PARAM_LOB);
-        $stmt->bindParam(':GroupID', $groupId, PDO::PARAM_INT);
-        $stmt->bindParam(':exDesc', $taskEventDescription, PDO::PARAM_STR, 1000);
+        $stmt->bindParam(':GroupID', $GroupId, PDO::PARAM_INT);
         $stmt->execute();
         $stmt->closeCursor();
         echo "inserted";
 
-        
-        $Note = $_POST['Note'];//
-        $Link = $_POST['Link'];//
+        $note = $_POST['Note'];
+        $url = $_POST['Link'];
 
-        $sql = 'CALL InsertNoteURL(:exNote, :exLink, :exGroupID)';
+        $sql = 'CALL InsertNoteUrl0(:exTitle, :exNote, :exUrl, @iTaskEventID)';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':exNote', $taskEventTitle, PDO::PARAM_STR,  50);
-        $stmt->bindParam(':exLink', $backlogResult, PDO::PARAM_LOB );
-		$stmt->bindParam(':GroupID', $groupId, PDO::PARAM_INT);
+        $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
+        $stmt->bindParam(':exNote', $note, PDO::PARAM_LOB );
+        $stmt->bindParam(':exUrl', $url, PDO::PARAM_LOB);
         $stmt->execute();
         $stmt->closeCursor();
-
-  //  }
-  //  catch(PDOException $e) {
-//echo $e->getMessage();
-  //  }
-
-
+        $resu = $db->query("SELECT @iTaskEventID AS Id")->fetch(PDO::FETCH_ASSOC);
 
 }
+
+///update task event-----------------------------------------------------------------------------------------------------
+//$sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exDesc, :exTaskEventID)';
+//        $stmt = $db->prepare($sql);
+//        $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
+//        $stmt->bindParam(':exBacklog', $backlog, PDO::PARAM_LOB );
+//        $stmt->bindParam(':exStartDate', $taskEventStart, PDO::PARAM_LOB);
+//        $stmt->bindParam(':exEndDate', $taskEventEnd, PDO::PARAM_LOB);
+ //       $stmt->bindParam(':GroupID', $groupId, PDO::PARAM_INT);
+ //       $stmt->bindParam(':exDesc', $taskEventDescription, PDO::PARAM_STR, 1000);
+ //       $stmt->bindParam(':exTaskEventID', $taskEventID, PDO::PARAM_INT);
+ //       $stmt->execute();
+ //       $stmt->closeCursor();
+
 ?>
-
-
-
+<form id="Group" action="Group.php" method="POST">
 <!DOCTYPE html>
 <html>
 <head>
 	<title></title>
+
 </head>
 
 <body>
+<!--<body onload="addCalanderEvent('myEvent', 2015-02-19, 2015-02-22)">-->
 
+<?php include 'Header.html'; ?>
 
-<div id='Project Desc' align="center" class="jumbotron" style="background-color:#FFF">	
-	<h3>Project Title</h1>
-	<p> Description : Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff
-	 Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff 
-	 Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff 
-	 Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff
-	 Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff 
-	 Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff 
-	 Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff Stuff 
-	 </p>
+<div id='Project Desc'>
+	<h1><?php echo "$prjName";?></h1>
+	<p> <?php echo "$prjDesc";?></p>
 
 </div>
 
@@ -174,36 +167,22 @@ echo "accept";
 <div id='wrap'>
 
 		<div id='external-events'>
-			<h4>Draggable Events</h4>
+			<h4>Backlog Events</h4>
 			<div class='fc-event'>My Event 1</div>
 			<div class='fc-event'>My Event 2</div>
 			<div class='fc-event'>My Event 3</div>
 			<div class='fc-event'>My Event 4</div>
 			<div class='fc-event'>My Event 5</div>
 			<p>
-				<input type='checkbox' id='drop-remove' />
-				<label for='drop-remove'>remove after drop</label>
+				<input hidden type='checkbox' checked id='drop-remove' />
+				<label hidden for='drop-remove'>remove after drop</label>
 			</p>
 
 		</div>
-		<div id='Students' style="margin-top:10px;">
-			
-		<!	<?php
-      //   require_once 'dbconfig.php';
+		<div id='Students'>
 
-       //  $db = new PDO("mysql:host=$host;dbname=$dbname",
-		//               $username, $password);
-       //  $sql="SELECT uName, UserID FROM users WHERE UserCurrentStatus = 'students'  order by uName"; 
-       //   echo "<select class='js-example-basic-multiple' multiple='multiple' size='2' name='ary[]'' value=''>User Name</option>";
-       // echo "<select>";
-       //   foreach ($db->query($sql) as $row){
-       //   echo "<option value=$row[UserID]>$row[uName]</option>"; 
-       //   $UserIdSelected = $row['UserID'];
-      //}
-
-          ?>
-          <h4>students</h4>
-			<!--<select name="Students" size="4" style="width: 110px; overflow:hidden;" >-->
+			<h4>students</h4>
+				<!--<select name="Students" size="4" style="width: 110px; overflow:hidden;" >-->
 			<?php
          require_once 'dbconfig.php';
 
@@ -211,7 +190,7 @@ echo "accept";
        //            $username, $password);
        // $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $gid=132;
+        
 
         $sql = 'CALL StudentsinGroup0(:exGroupID)';
         $stmt = $db->prepare($sql);
@@ -234,9 +213,11 @@ echo "accept";
           ?>
 		</div>
 		
-		<button type="button" id='Addevent' class="btn btn-info btn-sm" onclick="EventAdd()"> Add Event 
-  		<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
-		</button> 
+    <button type="button" id='Addevent' name='Addevent' class="btn btn-info btn-sm" onclick="EventAdd()"> Add Event 
+		<!--<button type="button" id='Addevent' onclick="addCalanderEvent()" name='Addevent' class="btn btn-info btn-sm"> Add Event -->
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+    </button> 
+    
 
 		<div id='calendar'></div>
 
@@ -266,7 +247,7 @@ echo "accept";
 		<br />
 		<br />
 		<section> Start Date: </section>
-		<aside><input type="text" id="Startdatepicker" name="Startdate" readonly placeholder="dd/mm/yyyy"></aside>
+		<aside><input type="text" id="Startdatepicker" name="Startdate"  placeholder="dd/mm/yyyy"></aside>
 		<br/>
 		<br/>
 		<section> End Date: </section>
@@ -278,14 +259,20 @@ echo "accept";
 		<br/>
 		<br/>
 		<label id="lbendtime" for="endTimepicker" > End Time:</label>
-		<aside><input  type="text" id="endTimepicker" name="endTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>	
-			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut"  style="" value="Accept0" />
+		<aside><input  type="text" id="endTimepicker" name="endTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>
+
+
+
+			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut"  style="" onclick="addCalanderEvent()"   value="Accept0" />
+
+
+
 		<button><input type="submit" id="cancelbut" class="btn btn-info" name="cancelbut" onclick = "pophide()"style="" value="cancel" /></button>	
 		<section id="notecont"> Notes :
 		<aside><TEXTAREA id="Note" name="Note" class="form-control"  type="text" rows="8" maxlenght="100" wrap="hard" placeholder="Enter text here..........."></TEXTAREA><br></aside></section>
 		
 		<section id="linkcont"> Relevent Link :
-		<aside><input id="Link" type="url" class="form-control" placeholder="www.Website.com"></input></aside></section>
+		<aside><input id="Link" name="Link" type="url" class="form-control" placeholder="www.Website.com"></input></aside></section>
          </div>
 		</form>
 		</div>
@@ -294,15 +281,26 @@ echo "accept";
 
 </div>
 
+<div id="footer" class="navbar navbar-default navbar-fixed-bottom">
+	<div class="container">
+		<p>
+        	HRPM Project:Made my Tomás Mc Mahon,Greg Sheerin,Cormac Hallinan,John Mc Gowan.Made for PJR300 
+        	<a href="about.html">About</a>
+			<a onclick="div_showcontact()">Contact</a>
+			<a onclick="div_show()">Register?</a>
+		</p>
+	</div>
+</div>
 
 
 </body>
 <meta charset='utf-8' />
 <link href="Calender/fullcalendar.css" rel="stylesheet" />
-<link href="Calender/fullcalen	dar.print.css" rel="stylesheet" media="print" />
+<link href="Calender/fullcalendar.print.css" rel="stylesheet" media="print" />
 <!--<link href="Calender/jquery-ui-Datepicker/jquery-ui.css" rel="stylesheet">-->
 <!--<script rel="stylesheet" src="Css/CalCass.Css"></script>-->
-<script src="lib/moment.min.js"></script>		
+<link rel="stylesheet" type="text/css" href="js.select2-3.5.2/select2.css"></link>
+<script src="lib/moment.min.js"></script>
 <script src="lib/jquery.min.js"></script>
 <script src='lib/jquery-ui.custom.min.js'></script>
 <script src='less/datepicker.less'></script>
@@ -316,143 +314,36 @@ echo "accept";
 <script src='Calender/CalCustom.js'></script>
 <link href="Css/jquery.timepicker.css" rel="stylesheet" />
 <script src="Calender/jquery.timepicker.js"></script>
-
 <!--<script src="Calender/jquery-ui-Datepicker/external/jquery/jquery.js"></script>
 <script src="Calender/jquery-ui-Datepicker/jquery-ui.js"></script>-->
 
 <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>-->
+  <script type="text/javascript">
+   
+  </script>
+<script type="text/javascript">
+var jsonTest = <?php echo json_encode($ar[0]) ?>;
 
-<script>
-$(document).ready(function() {
-	
-	
-		/* initialize the external events
-		-----------------------------------------------------------------*/
-	    
-		$('#external-events .fc-event').each(function() {
-		
-			// create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-			// it doesn't need to have a start or end
-			var eventObject = {
-				title: $.trim($(this).text()) // use the element's text as the event title
-			};
-			
-			// store the Event Object in the DOM element so we can get to it later
-			$(this).data('eventObject', eventObject);
-			
-			// make the event draggable using jQuery UI
-			$(this).draggable({
-				zIndex: 999,
-				revert: true,      // will cause the event to go back to its
-				revertDuration: 0  //  original position after the drag
-			});
-			
-		});
-	
-	
-		/* initialize the calendar
-		-----------------------------------------------------------------*/
-		
-		$('#calendar').fullCalendar({
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
-			},
-			editable: true,
-			eventLimit: true, // allow "more" link when too many events
-			droppable: true, // this allows things to be dropped onto the calendar !!!
-			drop: function(date) { // this function is called when something is dropped
-			
-				// retrieve the dropped element's stored Event Object
-				var originalEventObject = $(this).data('eventObject');
-				
-				// we need to copy it, so that multiple events don't have a reference to the same object
-				var copiedEventObject = $.extend({}, originalEventObject);
-				
-				// assign it the date that was reported
-				copiedEventObject.start = date;
-				
-				// render the event on the calendar
-				// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-				$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-				
-				// is the "remove after drop" checkbox checked?
-				if ($('#drop-remove').is(':checked')) {
-					// if so, remove the element from the "Draggable Events" list
-					$(this).remove();
-				}
-				
-			}
-		});
-		
-		
-	});
-	
+
+window.onload = function addCalanderEvent( title, start, end)
+{
+  var eventName = <?php echo json_encode($taskTitle) ?>;
+  var eventstart = <?php echo json_encode($taskStartDate) ?>;
+  var eventEnd = <?php echo json_encode($taskEndDate) ?>;
+
+  //alert("the event name is " +eventName +" start " + eventstart + " end " + eventEnd);
+
+    var eventObject = {
+    title: eventName,
+    start: eventstart,
+    end: eventEnd
+    };
+
+    $('#calendar').fullCalendar('renderEvent', eventObject, true);
+    return eventObject;
+}
 </script>
-<script>
-  $(function() {
-    $( "#Startdatepicker" ).datepicker({
-        dateFormat: "dd-mm-yy",
-        minDate: 0,
-        onSelect: function (date) {
-            var date2 = $('#Startdatepicker').datepicker('getDate');
-            date2.setDate(date2.getDate() + 1);
-            $('#Enddatepicker').datepicker('setDate', date2);
-            //sets minDate to dt1 date + 1
-            $('#Enddatepicker').datepicker('option', 'minDate', date2);
-        }
-    });
-    $( "#Enddatepicker" ).datepicker({
-        dateFormat: "dd-mm-yy",
-        onClose: function () {
-            var dt1 = $('#Startdatepicker').datepicker('getDate');
-            var dt2 = $('#Enddatepicker').datepicker('getDate');
-            //check to prevent a user from entering a date below date of dt1
-            if (dt2 <= dt1) {
-                var minDate = $('#Enddatepicker').datepicker('option', 'minDate');
-                $('#Enddatepicker').datepicker('setDate', minDate);
-                $('#Enddatepicker').datepicker('setDate', minDate);
-            }
-        }
-    });
-    //$('#startTimepicker').timepicker();
-    //$('#endTimepicker').timepicker();
-    
-	});
-  //$(function() {
-  //  $( "#Startdatepicker" ).datepicker();
-  //});
-  
-  /*$(function formenabler(venabe){
-  	if (venabe == "1" ){
-  	document.getElementById('Title').disabled=false;
-  	document.getElementById('Startdatepicker').disabled=false;
-  	document.getElementById('Enddatepicker').disabled=true;
-  	document.getElementById('Note').disabled=false;
-  	document.getElementById('Link').disabled=false;
-  	}
-  	else if (venabe == "2"){
-  	document.getElementById('Title').disabled=false;
-  	document.getElementById('Startdatepicker').disabled=false;
-  	document.getElementById('Enddatepicker').disabled=false;
-  	document.getElementById('Note').disabled=false;
-  	document.getElementById('Link').disabled=false;
-  	}
-  	else (venabe == "3"){
-  	document.getElementById('Title').disabled=false;
-  	document.getElementById('Startdatepicker').disabled=false;
-  	document.getElementById('Enddatepicker').disabled=false;
-  	document.getElementById('Note').disabled=false;
-  	document.getElementById('Link').disabled=false;
-  	}
-
-
-
-  		});*/
-  	
-
-
 </html>
+</form>

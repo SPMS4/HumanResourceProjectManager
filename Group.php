@@ -22,18 +22,30 @@
         $stmt->execute();
         //$stmt->closeCursor();
         $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($arrVal as $key => $val) {
-            $taskId = $val['TaskEventID'];
-            $taskBackLog = $val['Backlog'];
-            $taskEndDate = $val['EndDate'];
-            $taskStartDate = $val['StartDate'];
-            $taskTitle = $val['Title'];
+        // foreach ($arrVal as $key => $val) {
+        //    $taskId = $val['TaskEventID'];
+        //    $taskBackLog = $val['Backlog'];
+        //    $taskEndDate = $val['EndDate'];
+        //    $taskStartDate = $val['StartDate'];
+        //    $taskTitle = $val['Title'];
 
-            json_encode($taskTitle);
-            json_encode($taskEndDate);
-            json_encode($taskStartDate);
-        }//end foreach for task
-        json_encode($arrVal);
+            //json_encode($taskTitle);
+            //json_encode($taskEndDate);
+            //json_encode($taskStartDate);
+        //}//end foreach for task
+        //json_encode($arrVal);
+        //json_encode($taskTitle);
+        //json_encode($taskEndDate);
+        //json_encode($taskStartDate);
+        $jsData = [];
+        foreach ($arrVal as $key => $val) {
+        $jsData[] = [
+        "eventName" => $val["Title"],
+        "eventstart" => $val["StartDate"],
+        "eventEnd" => $val["EndDate"]
+        ];
+        }
+        //var_dump($jsData);
 
             //proc for event SelectEvent
         $sql = 'CALL SelectEvent(:exGroupID)';
@@ -49,12 +61,9 @@
             $eventTitle = $val['Title'];
             echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
        }
-   //    echo '<script type="text/javascript">'
-   //         , 'addCalanderEvent();'
-   //        , '</script>';
 
-       //project details
-         
+
+       //project details       
          $sql = 'CALL ProjectDetailsForGroup(:exGroupID)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exGroupID', $GroupId, PDO::PARAM_INT);     
@@ -102,7 +111,7 @@ echo "accept";
        // $input = "2015-02-19";
        // $info = date_parse($input);
            
-        $sql = 'CALL InsertTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID)';
+        $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, @exNewId)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
         $stmt->bindParam(':exBacklog', $backlogResult, PDO::PARAM_LOB );
@@ -111,23 +120,29 @@ echo "accept";
         $stmt->bindParam(':GroupID', $GroupId, PDO::PARAM_INT);
         $stmt->execute();
         $stmt->closeCursor();
-        echo "inserted";
+        $resu = $db->query("SELECT @exNewId AS ID")->fetch(PDO::FETCH_ASSOC);
+        if ($resu) {
+        $TaskEventId = $resu['ID'];
+        echo "$TaskEventId <br/>";
+        }
 
-        $note = $_POST['Note'];
-        $url = $_POST['Link'];
+         $note = "First Note";
+         $url = "";
+        sleep(3);
 
-        $sql = 'CALL InsertNoteUrl0(:exTitle, :exNote, :exUrl, @iTaskEventID)';
+        $sql = 'CALL InsertNoteUrl0(:exTaskEventID, :exTitle, :exNote, :exUrl)';
         $stmt = $db->prepare($sql);
+        $stmt->bindParam(':exTaskEventID', $TaskEventId, PDO::PARAM_STR,  50);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
         $stmt->bindParam(':exNote', $note, PDO::PARAM_LOB );
         $stmt->bindParam(':exUrl', $url, PDO::PARAM_LOB);
         $stmt->execute();
         $stmt->closeCursor();
-        $resu = $db->query("SELECT @iTaskEventID AS Id")->fetch(PDO::FETCH_ASSOC);
 
 }
 
 ///update task event-----------------------------------------------------------------------------------------------------
+//WE NEED TO EXECUTE THIS SRPOC TO UPDATE A TASKEVENT AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
 //$sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exDesc, :exTaskEventID)';
 //        $stmt = $db->prepare($sql);
 //        $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
@@ -139,6 +154,17 @@ echo "accept";
  //       $stmt->bindParam(':exTaskEventID', $taskEventID, PDO::PARAM_INT);
  //       $stmt->execute();
  //       $stmt->closeCursor();
+
+ ///update NOTE URL-----------------------------------------------------------------------------------------------------
+//WE NEED TO EXECUTE THIS SRPOC TO UPDATE A NOTEURL AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
+//$sql = 'CALL InsertNoteUrl0(:exTaskEventID, :exTitle, :exNote, :exUrl)';
+//        $stmt = $db->prepare($sql);
+  //      $stmt->bindParam(':exTaskEventID', $TaskEventId, PDO::PARAM_STR,  50);
+    //    $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
+      //  $stmt->bindParam(':exNote', $note, PDO::PARAM_LOB );
+        //$stmt->bindParam(':exUrl', $url, PDO::PARAM_LOB);
+     //   $stmt->execute();
+     //   $stmt->closeCursor();
 
 ?>
 <form id="Group" action="Group.php" method="POST">
@@ -326,13 +352,19 @@ var jsonTest = <?php echo json_encode($ar[0]) ?>;
 
 window.onload = function addCalanderEvent( title, start, end)
 {
-  var eventName = <?php echo json_encode($taskTitle) ?>;
-  var eventstart = <?php echo json_encode($taskStartDate) ?>;
-  var eventEnd = <?php echo json_encode($taskEndDate) ?>;
+  var data = <?php echo json_encode($jsData) ?>;
 
-  alert("the event name is " +eventName +" start " + eventstart + " end " + eventEnd);
+  //you now have to iterate through the data array and do something with the values
+  for (var i = 0; i < data.length; i++) {
+     alert("the event name is " +data[i].eventName +" start " + data[i].eventstart + " end " + data[i].eventEnd);
+     var eventName = data[i].eventName;
+     var eventstart = data[i].eventstart;
+     var eventEnd = data[i].eventEnd;
 
-    var eventObject = {
+     
+  }
+  
+  var eventObject = {
     title: eventName,
     start: eventstart,
     end: eventEnd
@@ -340,6 +372,8 @@ window.onload = function addCalanderEvent( title, start, end)
 
     $('#calendar').fullCalendar('renderEvent', eventObject, true);
     return eventObject;
+
+    
 }
 </script>
 </html>

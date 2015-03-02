@@ -8,7 +8,7 @@ require_once 'dbconfig.php';
         
         session_start();
         //$Id=$_SESSION["Id"];
-        $Id = 27;
+        $Id=$_SESSION["Id"];
         $sql = "SELECT *
                 FROM users 
                 where UserID=$Id"; 
@@ -146,7 +146,7 @@ if(!isset($_SESSION))
             unset($_SESSION['groupId']);
             //then
             $_SESSION["groupId"] = "$selected";
-            header('Location: http://localhost/updatedPrj300/Group.php');
+            header('Location: http://localhost/HumanResourceProjectManager/Group.php');
             exit; 
           }
 
