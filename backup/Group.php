@@ -11,7 +11,7 @@
         $GroupId=$_SESSION["groupId"];
 
         $ar = array('Event 1', '2015-02-19', '2015-02-28' );
-       json_encode($ar);
+         json_encode($ar);
 
         echo "$Id and group is $GroupId<br/>";
         try {
@@ -22,31 +22,15 @@
         $stmt->execute();
         //$stmt->closeCursor();
         $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // foreach ($arrVal as $key => $val) {
-        //    $taskId = $val['TaskEventID'];
-        //    $taskBackLog = $val['Backlog'];
-        //    $taskEndDate = $val['EndDate'];
-        //    $taskStartDate = $val['StartDate'];
-        //    $taskTitle = $val['Title'];
-
-            //json_encode($taskTitle);
-            //json_encode($taskEndDate);
-            //json_encode($taskStartDate);
-        //}//end foreach for task
-        //json_encode($arrVal);
-        //json_encode($taskTitle);
-        //json_encode($taskEndDate);
-        //json_encode($taskStartDate);
-        $jsData = [];
         foreach ($arrVal as $key => $val) {
-        $jsData[] = [
-        "eventName" => $val["Title"],
-        "eventstart" => $val["StartDate"],
-        "eventColor" => $val["color"],
-        "eventEnd" => $val["EndDate"]
-        ];
-        }
-        //var_dump($jsData);
+            $taskId = $val['TaskEventID'];
+            $taskBackLog = $val['Backlog'];
+            $taskEndDate = $val['EndDate'];
+            $taskStartDate = $val['StartDate'];
+            $taskTitle = $val['Title'];
+            //echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
+            echo "$taskTitle";
+        }//end foreach for task
 
             //proc for event SelectEvent
         $sql = 'CALL SelectEvent(:exGroupID)';
@@ -62,9 +46,12 @@
             $eventTitle = $val['Title'];
             echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
        }
+   //    echo '<script type="text/javascript">'
+   //         , 'addCalanderEvent();'
+   //        , '</script>';
 
-
-       //project details       
+       //project details
+         
          $sql = 'CALL ProjectDetailsForGroup(:exGroupID)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exGroupID', $GroupId, PDO::PARAM_INT);     
@@ -86,6 +73,11 @@
 
 
 if (isset($_POST['acceptbut'])) {
+  ?>
+  <script type="text/javascript">
+    addCalanderEvent();
+  </script>
+  <?php
 // Start the session
 //session_start();
 echo "accept";
@@ -111,41 +103,33 @@ echo "accept";
 
        // $input = "2015-02-19";
        // $info = date_parse($input);
-        $color = "ff0000";
            
-        $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exColor, @exNewId)';
+        $sql = 'CALL InsertTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
         $stmt->bindParam(':exBacklog', $backlogResult, PDO::PARAM_LOB );
         $stmt->bindParam(':exStartDate', $taskEventStart, PDO::PARAM_LOB);
         $stmt->bindParam(':exEndDate', $taskEventEnd, PDO::PARAM_LOB);
         $stmt->bindParam(':GroupID', $GroupId, PDO::PARAM_INT);
-        $stmt->bindParam(':exColor', $color, PDO::PARAM_STR, 6);
         $stmt->execute();
         $stmt->closeCursor();
-        $resu = $db->query("SELECT @exNewId AS ID")->fetch(PDO::FETCH_ASSOC);
-        if ($resu) {
-        $TaskEventId = $resu['ID'];
-        echo "id = $TaskEventId <br/>";
-        }
+        echo "inserted";
 
-         $note = "First Note";
-         $url = "";
-        sleep(3);
+        $note = $_POST['Note'];
+        $url = $_POST['Link'];
 
-        $sql = 'CALL InsertNoteUrl0(:exTitle, :exTaskEventID, :exNote, :exLink)';
+        $sql = 'CALL InsertNoteUrl0(:exTitle, :exNote, :exUrl, @iTaskEventID)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
-        $stmt->bindParam(':exTaskEventID', $TaskEventId, PDO::PARAM_INT);
-        $stmt->bindParam(':exNote', $note, PDO::PARAM_STR, 100);
-        $stmt->bindParam(':exLink', $url, PDO::PARAM_STR, 2083);
+        $stmt->bindParam(':exNote', $note, PDO::PARAM_LOB );
+        $stmt->bindParam(':exUrl', $url, PDO::PARAM_LOB);
         $stmt->execute();
         $stmt->closeCursor();
+        $resu = $db->query("SELECT @iTaskEventID AS Id")->fetch(PDO::FETCH_ASSOC);
 
 }
 
 ///update task event-----------------------------------------------------------------------------------------------------
-//WE NEED TO EXECUTE THIS SRPOC TO UPDATE A TASKEVENT AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
 //$sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exDesc, :exTaskEventID)';
 //        $stmt = $db->prepare($sql);
 //        $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
@@ -157,17 +141,6 @@ echo "accept";
  //       $stmt->bindParam(':exTaskEventID', $taskEventID, PDO::PARAM_INT);
  //       $stmt->execute();
  //       $stmt->closeCursor();
-
- ///update NOTE URL-----------------------------------------------------------------------------------------------------
-//WE NEED TO EXECUTE THIS SRPOC TO UPDATE A NOTEURL AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
-//$sql = 'CALL InsertNoteUrl0(:exTaskEventID, :exTitle, :exNote, :exUrl)';
-//        $stmt = $db->prepare($sql);
-  //      $stmt->bindParam(':exTaskEventID', $TaskEventId, PDO::PARAM_STR,  50);
-    //    $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
-      //  $stmt->bindParam(':exNote', $note, PDO::PARAM_LOB );
-        //$stmt->bindParam(':exUrl', $url, PDO::PARAM_LOB);
-     //   $stmt->execute();
-     //   $stmt->closeCursor();
 
 ?>
 <form id="Group" action="Group.php" method="POST">
@@ -239,147 +212,174 @@ echo "accept";
           ?>
 		</div>
 		
-    <button type="button" id='Addevent' name='Addevent' class="btn btn-info btn-sm" onclick="EventAdd()"> Add Event 
-		<!--<button type="button" id='Addevent' onclick="addCalanderEvent()" name='Addevent' class="btn btn-info btn-sm"> Add Event -->
+<button type="button" id='Addevent' class="btn btn-info btn-sm" onclick="EventAdd()"> Add Event 
       <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
     </button> 
+
+    <div id='calendar'></div>
+
+    <div style='clear:both'></div>
     
+    <div class="popup">
+    <h3>Add to the Calander</h3>
+    <form id="popform">
+    <!--onchange="eventoption(this.value)" class="js-example-basic-single" -->
+    <select id="selectevent" name="selectevent"   >
+          <option value="0" selected disabled >Please Select One</option>
+          <option disabled>---------------------</option>
+          <option value="1" onclick="$('#Enddatepicker').attr('disabled', 'disabled');">All Day Event</option>
+          <option value="2" onmousedown="$('#Enddatepicker').attr('disabled', '');">Long Event </option>
+          <!--<option value="3">Time event</option>-->
+    </select>
+    <br />
+    <br />
+    <input type="checkbox" id="backlog">is this back log??</input>
+    <br />
+    <br />
+    <section> Event Title: </section>
+    <aside><input type="text" id="Title" placeholder="Project Title" ></aside>
+    <br />
+    <br />
+    <section> Start Date: </section>
+    <aside><input type="text" id="Startdatepicker" placeholder="dd/mm/yyyy"></aside>
+    <br/>
+    <br/>
+    <section id="endname"> End Date: </section>
+    <aside><input disabled type="text" id="Enddatepicker" style="visability:hidden;" placeholder="dd/mm/yyyy"></aside>  
+    <br/>
+    <br/>
+    <!--<label id="lbstarttime" for="startTimepicker" > Start Time:</label>
+    <aside><input  type="text" id="startTimepicker" style="visability:hidden;" placeholder="am/pm"></aside> 
+    <br/>
+    <br/>
+    <label id="lbendtime" for="endTimepicker" > End Time:</label>
+    <aside><input  type="text" id="endTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>-->
+    <button type="button" id="acceptbut" onclick="Choice()">Accept</button>
+    <button type="button" id="cancelbut" onclick="pophide()">Cancel</button>
 
-		<div id='calendar'></div>
+    <section id="notecont"> Notes :
+    <aside><TEXTAREA id="Note"  type="text" rows="10" maxlenght="1000" wrap="hard" placeholder="Enter text here..........."></TEXTAREA></aside></section>
+    
+    <section id="linkcont"> Relevent Link :
+    <aside><input  id="Link" type="url" placeholder="www.Website.com"></input></aside></section>
+    </form>
+    </div>
 
-		<div style='clear:both'></div>
-		
-		<div class="popup">
-		<h3>Add to the Calander</h3>
-		<form id="popform" action="Group.php" method="POST">
-		<select id="selectevent" name="selectevent" onchange="eventoption(this.value)" >
-  			<option value="0" selected disabled >Please Select One</option>
-  			<option disabled>---------------------</option>
-  			<option value="1">All Day Event</option>
-  			<option value="2">Dated Event </option>
-  			<option value="3">Time event</option>
-		</select>
-		<br />
-		<br />
-		<input type="checkbox" id="backlog" name="backlog">is this back log??</input>
-		<br />
-		<br />
-		<section> Event Title: </section>
-		<aside>
-        <div class="form-group">
-        <input type="text" class="control" id="Title" name="Title" placeholder="Project Title"  >
-      </div>
-        </aside>
-		<br />
-		<br />
-		<section> Start Date: </section>
-		<aside><input type="text" id="Startdatepicker" name="Startdate"  placeholder="dd/mm/yyyy"></aside>
-		<br/>
-		<br/>
-		<section> End Date: </section>
-		<aside><input  type="text" id="Enddatepicker" name="Enddate" readonly style="visability:hidden;" placeholder="dd/mm/yyyy"></aside>	
-		<br/>
-		<br/>
-		<label id="lbstarttime" for="startTimepicker" > Start Time:</label>
-		<aside><input  type="text" id="startTimepicker" name="startTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>	
-		<br/>
-		<br/>
-		<label id="lbendtime" for="endTimepicker" > End Time:</label>
-		<aside><input  type="text" id="endTimepicker" name="endTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>
+    <div class="popupupdate">
+    <h3>You clicked then event</h3>
+    <form id="popform">
+    <!--onchange="eventoption(this.value)" class="js-example-basic-single" -->
+    
+    <button type="button" id="acceptbut" onclick = "pophideupdate()" style="">Accept</button>
+    <button type="button" id="cancelbut" onclick = "pophideupdate()" style="">Cancel</button>
+    </form>
+    </div>
 
+    <div class="popupdrop">
+    <h3>You droped the event</h3>
+    <form id="popform">
+    <!--onchange="eventoption(this.value)" class="js-example-basic-single" -->
+    
+    <button type="button" id="acceptbut" onclick="pophidedrop()" style="">Accept</button>
+    <button type="button" id="cancelbut" onclick="pophidedrop()" style="">Cancel</button>
+    </form>
+    </div>
 
-
-			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut"  style="" onclick="addCalanderEvent()"   value="Accept0" />
-
-
-
-		<button><input type="submit" id="cancelbut" class="btn btn-info" name="cancelbut" onclick = "pophide()"style="" value="cancel" /></button>	
-		<section id="notecont"> Notes :
-		<aside><TEXTAREA id="Note" name="Note" class="form-control"  type="text" rows="8" maxlenght="100" wrap="hard" placeholder="Enter text here..........."></TEXTAREA><br></aside></section>
-		
-		<section id="linkcont"> Relevent Link :
-		<aside><input id="Link" name="Link" type="url" class="form-control" placeholder="www.Website.com"></input></aside></section>
-         </div>
-		</form>
-		</div>
-
-	</div>
+  </div>
 
 </div>
 
 <div id="footer" class="navbar navbar-default navbar-fixed-bottom">
-	<div class="container">
-		<p>
-        	HRPM Project:Made my Tomás Mc Mahon,Greg Sheerin,Cormac Hallinan,John Mc Gowan.Made for PJR300 
-        	<a href="about.html">About</a>
-			<a onclick="div_showcontact()">Contact</a>
-			<a onclick="div_show()">Register?</a>
-		</p>
-	</div>
+  <div class="container">
+    <p>
+          HRPM Project:Made my Tomás Mc Mahon,Greg Sheerin,Cormac Hallinan,John Mc Gowan.Made for PJR300 
+          <a href="about.html">About</a>
+      <a onclick="div_showcontact()">Contact</a>
+      <a onclick="div_show()">Register?</a>
+    </p>
+  </div>
 </div>
+
 
 
 </body>
 <meta charset='utf-8' />
 <link href="Calender/fullcalendar.css" rel="stylesheet" />
 <link href="Calender/fullcalendar.print.css" rel="stylesheet" media="print" />
-<!--<link href="Calender/jquery-ui-Datepicker/jquery-ui.css" rel="stylesheet">-->
-<!--<script rel="stylesheet" src="Css/CalCass.Css"></script>-->
-<link rel="stylesheet" type="text/css" href="js.select2-3.5.2/select2.css"></link>
-<script src="lib/moment.min.js"></script>
-<script src="lib/jquery.min.js"></script>
-<script src='lib/jquery-ui.custom.min.js'></script>
-<script src='less/datepicker.less'></script>
-<script src='lib/bootstrap-datepicker.js'></script>
-<script src="Calender/fullcalendar.min.js"></script>
-<link href="bootstrap/css/bootstrap.css" rel="stylesheet" />
-<script src="bootstrap/js/bootstrap.js"></script>
 <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
 <link href="Css/CalCss.css" rel="stylesheet" />
 <link href="Css/datepicker.css" rel="stylesheet" />
-<script src='Calender/CalCustom.js'></script>
+<link rel="stylesheet" type="text/css" href="js.select2-3.5.2/select2.css"></link>
+<link href="bootstrap/css/bootstrap.css" rel="stylesheet" />
 <link href="Css/jquery.timepicker.css" rel="stylesheet" />
+<script src="lib/moment.min.js"></script>
+<script src="lib/jquery.min.js"></script>
+<script src='lib/jquery-ui.custom.min.js'></script>
+<script src='lib/bootstrap-datepicker.js'></script>
+<script src='less/datepicker.less'></script>
+<script src='Calender/CalCustom.js'></script>
 <script src="Calender/jquery.timepicker.js"></script>
-<!--<script src="Calender/jquery-ui-Datepicker/external/jquery/jquery.js"></script>
-<script src="Calender/jquery-ui-Datepicker/jquery-ui.js"></script>-->
+<script src="Calender/fullcalendar.min.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
 
-<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>-->
-  <script type="text/javascript">
+<script type="text/javascript">
    
   </script>
 <script type="text/javascript">
-var jsonTest = <?php echo json_encode($ar[0]) ?>;
+var eventName = <?php echo json_encode($ar[0]) ?>;
+var eventstart = <?php echo json_encode($ar[1]) ?>;
+var eventEnd = <?php echo json_encode($ar[2]) ?>;
+alert("the event name is " +eventName +" start " + eventstart + " end " + eventEnd);
 
-
-window.onload = function addCalanderEvent( title, start, end, color)
+window.onload = function addCalanderEvent( title, start, end)
 {
-  var data = <?php echo json_encode($jsData) ?>;
+    
 
-  //you now have to iterate through the data array and do something with the values
-  for (var i = 0; i < data.length; i++) {
-     alert("the event name is " +data[i].eventName +" start " + data[i].eventstart + " end " + data[i].eventEnd);
-     var eventName = data[i].eventName;
-     var eventstart = data[i].eventstart;
-     var eventEnd = data[i].eventEnd;
-     var color = data[i].eventColor;
-
-     var eventObject = {
+    var eventObject = {
     title: eventName,
     start: eventstart,
-    end: eventEnd,
-    color: color
+    end: eventEnd
     };
 
     $('#calendar').fullCalendar('renderEvent', eventObject, true);
-  }
-  
-  
-    //return true;
-
-    
+    return eventObject;
 }
+</script>
+<script>
+
+function Choice(){
+  alert('poop'); 
+ /* var Foo = foo
+  if (Foo == 1){
+    //addCalanderEvent(); 
+    alert('poop');  
+  }
+  else {
+    //addCalanderTask();
+    alert('greg');  
+  }*/};
+
+function addCalanderEvent( start, end, title)
+{
+    var eventObject = {
+    title: "Event",
+    start: '2015-02-24',
+    end: '2015-02-25'
+    };
+
+    $('#calendar').fullCalendar('renderEvent', eventObject, true);
+    return eventObject;
+
+function addCalanderTask( start, end, title)
+{
+    var eventObject = {
+    title: "Task",
+    start: '2015-02-24',
+    end: '2015-02-25'
+    };
+
+    $('#calendar').fullCalendar('renderEvent', eventObject, false);
+    return eventObject;
 </script>
 </html>
 </form>

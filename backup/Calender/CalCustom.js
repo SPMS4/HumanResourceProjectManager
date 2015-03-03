@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 /* initialize the external events
 -----------------------------------------------------------------*/
@@ -37,15 +36,26 @@ var originalEventObject = $(this).data('eventObject');
 var copiedEventObject = $.extend({}, originalEventObject);
 // assign it the date that was reported
 copiedEventObject.start = date;
+
+$(".popupdrop").show();
+$(".popupdrop").focus();
 // render the event on the calendar
 // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
 $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
 // is the "remove after drop" checkbox checked?
 if ($('#drop-remove').is(':checked')) {
-	// if so, remove the element from the "Draggable Events" list
-	$(this).remove();
-}
-}
+    // if so, remove the element from the "Draggable Events" list
+    $(this).remove();}},
+
+eventClick: function(calEvent, jsEvent, view) {
+
+        $(".popupupdate").show();
+        $(".popupupdate").focus();
+
+        // change the border color just for fun
+        $(this).css('border-color', 'red');}
+        
+
 });
 //$(".js-example-basic-single").select2();
 });
@@ -91,7 +101,13 @@ $('#selectevent').val(0);
 $(".popup").hide();
 };
 
+function pophideupdate() {
+$(".popupupdate").hide();
+};
 
+function pophidedrop() {
+$(".popupdrop").hide();
+};
 
 $('select[id="selectevent"] ').change(function () {
 if ($(this).val() == "1")
@@ -141,8 +157,32 @@ document.getElementById('Link').disabled=false;
 });*/-->
 
 
+/*function addCalanderEvent( start, end, title)
+{
 
+    Event: {
+    title: 'my event',
+    start: '2015-02-19',
+    end: '2015-02-20'
+    };
 
+    $('#calendar').fullCalendar('renderEvent', eventObject, true);
+    return eventObject;
+}*/
+
+/*function addCalanderEvent(id, start, end, title, colour)
+{
+    var eventObject = {
+    title: 'my event',
+    start: '2015-02-19',
+    end: '2015-02-20',
+    id: '12',
+    color: 'ffffff'
+    };
+
+    $('#calendar').fullCalendar('renderEvent', eventObject, true);
+    return eventObject;
+}*/
 /*function addCalanderEvent(id, start, end, title, colour)
 {
     var eventObject = {
