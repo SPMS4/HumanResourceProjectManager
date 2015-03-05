@@ -40,10 +40,11 @@
         $jsData = [];
         foreach ($arrVal as $key => $val) {
         $jsData[] = [
-        "eventName" => $val["Title"],
-        "eventstart" => $val["StartDate"],
-        "eventColor" => $val["color"],
-        "eventEnd" => $val["EndDate"]
+        "taskId" => $val["TaskEventID"],
+        "taskName" => $val["Title"],
+        "taskStart" => $val["StartDate"],
+        "taskColor" => $val["color"],
+        "taskEnd" => $val["EndDate"]
         ];
         }
         //var_dump($jsData);
@@ -54,14 +55,25 @@
         $stmt->bindParam(':exGroupID', $GroupId, PDO::PARAM_INT);     
         $stmt->execute();
         //$stmt->closeCursor();
-        $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($arrVal as $key => $val) {
-            $eventId = $val['TaskEventID'];
-            $eventBackLog = $val['Backlog'];
-            $eventStartDate = $val['StartDate'];
-            $eventTitle = $val['Title'];
-            echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
-       }
+        $arrVal1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $jsData1 = [];
+        foreach ($arrVal1 as $key => $val) {
+        $jsData1[] = [
+        "eventId" => $val["TaskEventID"],
+        "eventName" => $val["Title"],
+        "eventStart" => $val["StartDate"],
+        "eventColor" => $val["color"],
+        "eventEnd" => $val["EndDate"]
+        ];
+        }
+        //foreach ($arrVal1 as $key => $val) {
+        //    $eventId = $val['TaskEventID'];
+        //    $eventBackLog = $val['Backlog'];
+        //    $eventStartDate = $val['StartDate'];
+        //    $eventTitle = $val['Title'];
+        //    //echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
+       //}
+       //var_dump($arrVal1);
 
 
        //project details       
@@ -112,7 +124,7 @@ echo "accept";
 
        // $input = "2015-02-19";
        // $info = date_parse($input);
-        $color = "";
+        $color = "ffff00";
            
         $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exColor, @exNewId)';
         $stmt = $db->prepare($sql);
@@ -356,32 +368,48 @@ echo "accept";
 var jsonTest = <?php echo json_encode($ar[0]) ?>;
 
 
-window.onload = function addCalanderEvent( title, start, end, color)
+window.onload = function addCalanderTask( id, title, start, end, color)
 {
   var data = <?php echo json_encode($jsData) ?>;
 
   //you now have to iterate through the data array and do something with the values
   for (var i = 0; i < data.length; i++) {
-     alert("the event name is " +data[i].eventName +" start " + data[i].eventstart + " end " + data[i].eventEnd);
-     var eventName = data[i].eventName;
-     var eventstart = data[i].eventstart;
-     var eventEnd = data[i].eventEnd;
-     var color = data[i].eventColor;
+     alert("the event name is " +data[i].taskName +" start " + data[i].taskId + " end " + data[i].eventEnd);
+     var id = data[i].taskId;
+     var taskName = data[i].taskName;
+     var taskStart = data[i].taskStart;
+     var taskEnd = data[i].taskEnd;
+     var taskColor = data[i].taskColor;
 
      var eventObject = {
-    title: eventName,
-    start: eventstart,
-    end: eventEnd,
-    color: color
+    title: taskName,
+    start: taskStart,
+    end: taskEnd,
+    id: id,
+    color: taskColor
     };
 
     $('#calendar').fullCalendar('renderEvent', eventObject, true);
-  }
-  
-  
-    //return true;
+  } 
 
-    
+var data = <?php echo json_encode($jsData1) ?>;
+
+  //you now have to iterate through the data array and do something with the values
+  for (var i = 0; i < data.length; i++) {
+     var eventId = data[i].eventId;
+     var eventName = data[i].eventName;
+     var eventStart = data[i].eventStart;
+     var eventColor = data[i].eventColor;
+
+     var eventObject = {
+    title: eventName,
+    start: eventStart,
+    id: eventId,
+    color: eventColor
+    };
+
+    $('#calendar').fullCalendar('renderEvent', eventObject, true);
+  }   
 }
 </script>
 </html>
