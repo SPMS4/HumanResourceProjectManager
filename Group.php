@@ -105,20 +105,21 @@ echo "accept";
         $taskEventStart = $_POST['Startdate'];
         $taskEventEnd = $_POST['Enddate'];
              echo "<br>START DATE : $taskEventStart</br>";
-        $startParsed = date_parse($taskEventStart);
-        //$taskEventTime = $_POST['endTimepicker'];
-       // $taskEventDescription = $_POST['Note'];
+             //$dateToday = date("03-04-2015");
+			 $newStartDate = date("Y-m-d", strtotime($taskEventStart));
+			 $newEndDate = date("Y-m-d", strtotime($taskEventEnd));
+			 echo "$newStartDate<br/>";
 
        // $input = "2015-02-19";
        // $info = date_parse($input);
-        $color = "ff0000";
+        $color = "";
            
         $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exColor, @exNewId)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
         $stmt->bindParam(':exBacklog', $backlogResult, PDO::PARAM_LOB );
-        $stmt->bindParam(':exStartDate', $taskEventStart, PDO::PARAM_LOB);
-        $stmt->bindParam(':exEndDate', $taskEventEnd, PDO::PARAM_LOB);
+        $stmt->bindParam(':exStartDate', $newStartDate, PDO::PARAM_LOB);
+        $stmt->bindParam(':exEndDate', $newEndDate, PDO::PARAM_LOB);
         $stmt->bindParam(':GroupID', $GroupId, PDO::PARAM_INT);
         $stmt->bindParam(':exColor', $color, PDO::PARAM_STR, 6);
         $stmt->execute();
@@ -129,9 +130,8 @@ echo "accept";
         echo "id = $TaskEventId <br/>";
         }
 
-         $note = "First Note";
-         $url = "";
-        sleep(3);
+         $note = $_POST['Note'];
+         $url = $_POST['Link'];
 
         $sql = 'CALL InsertNoteUrl0(:exTitle, :exTaskEventID, :exNote, :exLink)';
         $stmt = $db->prepare($sql);
@@ -141,6 +141,9 @@ echo "accept";
         $stmt->bindParam(':exLink', $url, PDO::PARAM_STR, 2083);
         $stmt->execute();
         $stmt->closeCursor();
+
+        header('Location: http://localhost/HumanResourceProjectManager/Group.php');
+            exit;
 
 }
 
@@ -277,7 +280,7 @@ echo "accept";
 		<br/>
 		<br/>
 		<section> End Date: </section>
-		<aside><input  type="text" id="Enddatepicker" name="Enddate" readonly style="visability:hidden;" placeholder="dd/mm/yyyy"></aside>	
+		<aside><input  type="text" id="Enddatepicker" name="Enddate"  placeholder="dd/mm/yyyy"></aside>	
 		<br/>
 		<br/>
 		<label id="lbstarttime" for="startTimepicker" > Start Time:</label>
