@@ -317,6 +317,68 @@ echo "accept";
          </div>
 		</form>
 		</div>
+    
+    <div class="popupupdate">
+    <h3>You clicked then event</h3>
+    <form id="popform">
+    <!--onchange="eventoption(this.value)" class="js-example-basic-single" -->
+
+
+    <section> Event Title: </section>
+    <aside><input type="text" id="Title" placeholder="Project Title" ></aside>
+    <br />
+    <br />
+    <section> Start Date: </section>
+    <aside><input type="text" id="Startdatepicker" placeholder="dd/mm/yyyy"></aside>
+    <br/>
+    <br/>
+    <section id="endname"> End Date: </section>
+    <aside><input type="text" id="Enddatepicker" style="visability:hidden;" placeholder="dd/mm/yyyy"></aside> 
+    <br/>
+    <br/>
+
+    <section id="notecont"> Notes :
+    <aside><TEXTAREA id="Note"  type="text" rows="10" maxlenght="1000" wrap="hard" placeholder="Enter text here..........."></TEXTAREA></aside></section>
+    
+    <section id="linkcont"> Relevent Link :
+    <aside><input  id="Link" type="url" placeholder="www.Website.com"></input></aside></section>
+
+    <button type="button" id="acceptbut" onclick = "pophideupdate()" style="">Accept</button>
+    <button type="button" id="cancelbut" onclick = "pophideupdate()" style="">Cancel</button>
+
+    </form>
+    </div>
+
+    <div class="popupdrop">
+    <h3>You droped the event</h3>
+    <form id="popform">
+    <!--onchange="eventoption(this.value)" class="js-example-basic-single" -->
+    <input type="checkbox" id="oneday">Is this a Task</input>
+    <br />
+    <br />
+    <section> Event Title: </section>
+    <aside><input type="text" id="Title" placeholder="Project Title" ></aside>
+    <br />
+    <br />
+    <section> Start Date: </section>
+    <aside><input type="text" id="Startdatepicker" placeholder="dd/mm/yyyy"></aside>
+    <br/>
+    <br/>
+    <section id="endname"> End Date: </section>
+    <aside><input type="text" id="Enddatepicker" style="visability:hidden;" placeholder="dd/mm/yyyy"></aside> 
+    <br/>
+    <br/>
+
+    <section id="notecont"> Notes :
+    <aside><TEXTAREA id="Note"  type="text" rows="10" maxlenght="1000" wrap="hard" placeholder="Enter text here..........."></TEXTAREA></aside></section>
+    
+    <section id="linkcont"> Relevent Link :
+    <aside><input  id="Link" type="url" placeholder="www.Website.com"></input></aside></section>
+    
+    <button type="button" id="acceptbut" onclick="pophidedrop()" style="">Accept</button>
+    <button type="button" id="cancelbut" onclick="pophidedrop()" style="">Cancel</button>
+    </form>
+    </div>
 
 	</div>
 
@@ -338,26 +400,26 @@ echo "accept";
 <meta charset='utf-8' />
 <link href="Calender/fullcalendar.css" rel="stylesheet" />
 <link href="Calender/fullcalendar.print.css" rel="stylesheet" media="print" />
-<!--<link href="Calender/jquery-ui-Datepicker/jquery-ui.css" rel="stylesheet">-->
-<!--<script rel="stylesheet" src="Css/CalCass.Css"></script>-->
 <link rel="stylesheet" type="text/css" href="js.select2-3.5.2/select2.css"></link>
+<link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
+<link href="Css/CalCss.css" rel="stylesheet" />
+<link href="Css/datepicker.css" rel="stylesheet" />
+<link href="bootstrap/css/bootstrap.css" rel="stylesheet" />
+<link href="Css/jquery.timepicker.css" rel="stylesheet" />
 <script src="lib/moment.min.js"></script>
 <script src="lib/jquery.min.js"></script>
 <script src='lib/jquery-ui.custom.min.js'></script>
 <script src='less/datepicker.less'></script>
 <script src='lib/bootstrap-datepicker.js'></script>
 <script src="Calender/fullcalendar.min.js"></script>
-<link href="bootstrap/css/bootstrap.css" rel="stylesheet" />
 <script src="bootstrap/js/bootstrap.js"></script>
-<link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
-<link href="Css/CalCss.css" rel="stylesheet" />
-<link href="Css/datepicker.css" rel="stylesheet" />
 <script src='Calender/CalCustom.js'></script>
-<link href="Css/jquery.timepicker.css" rel="stylesheet" />
 <script src="Calender/jquery.timepicker.js"></script>
+
+<!--<link href="Calender/jquery-ui-Datepicker/jquery-ui.css" rel="stylesheet">-->
+<!--<script rel="stylesheet" src="Css/CalCass.Css"></script>-->
 <!--<script src="Calender/jquery-ui-Datepicker/external/jquery/jquery.js"></script>
 <script src="Calender/jquery-ui-Datepicker/jquery-ui.js"></script>-->
-
 <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>-->
