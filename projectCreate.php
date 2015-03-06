@@ -28,7 +28,7 @@ if (isset($_POST['submit']))
         $stmt->execute();
         $stmt->closeCursor();
 
-             header('Location: http://localhost/updatedPrj300/profile.php');
+             header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             exit;
         
         echo "in";

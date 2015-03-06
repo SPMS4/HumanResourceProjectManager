@@ -89,8 +89,8 @@ if ($stat == "lecturer") {
                             ";
                 $calendar_table = $db->query($calanderInsert);  
              }
-            // header('Location: http://localhost/HumanResourceProjectManager/profile.php');
-            //exit;
+             header('Location: http://localhost/HumanResourceProjectManager/profile.php');
+            exit;
              
       } 
       catch (PDOException $pe){
@@ -106,8 +106,8 @@ if ($stat == "lecturer") {
   //student cannot acces this page
   else{
     echo "you are student";
-    //header('Location: http://localhost/HumanResourceProjectManager/profile.php');
-    //        exit;
+    header('Location: http://localhost/HumanResourceProjectManager/profile.php');
+           exit;
   }
 
 ?>
@@ -184,11 +184,11 @@ if ($stat == "lecturer") {
 
           $db = new PDO("mysql:host=$host;dbname=$dbname",
                             $username, $password);
-          $sql="SELECT uName, UserID FROM users WHERE UserCurrentStatus = 'students'  order by uName"; 
+          $sql="SELECT Email, UserID FROM users WHERE UserCurrentStatus = 'students'  order by Email"; 
           echo "<select class='js-example-basic-multiple' multiple='multiple' size='2' name='ary[]'' value=''>User Name</option>";
          // echo "<select>";
           foreach ($db->query($sql) as $row){
-          echo "<option value=$row[UserID]>$row[uName]</option>"; 
+          echo "<option value=$row[UserID]>$row[Email]</option>"; 
           $UserIdSelected = $row['UserID'];
           if (isset($_POST['submit'])) 
   {

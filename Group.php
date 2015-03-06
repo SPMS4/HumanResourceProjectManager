@@ -124,7 +124,7 @@ echo "accept";
 
        // $input = "2015-02-19";
        // $info = date_parse($input);
-        $color = "ffff00";
+        $color = "ff0ff0";
            
         $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exColor, @exNewId)';
         $stmt = $db->prepare($sql);

@@ -2,6 +2,7 @@
 
 			session_start();
 			$Id=$_SESSION["Id"];
+			echo "id = $Id <br/>";
 
         require_once 'dbconfig.php';
 
@@ -15,8 +16,8 @@
 
 			foreach ($db->query($sql) as $data) {
           $Id = $data['UserID'];
-          $name = $data['uName'];
           $fName = $data['fName'];
+          echo "$fName <br/>";
           $sName = $data['sName'];
           $Address=$data['Address'];
           $Address2=$data['Address2'];
@@ -44,25 +45,9 @@
 			//$email = ($_POST['EmailTXT']);
 			$phone = ($_POST['Phone1TXT']);
 			$phone2 = ($_POST['Phone2TXT']);
-			$color = ($_POST['Color']);
+			$color = ($_POST['ColorTXT']);
 
-			$sql = 'CALL UpdateProfile(:exUserID, :exfName, :exsName, :exAddress, :exAddress2, :exCity, :exCountry, :exCounty, :exPhone, :exPhone2, exColor)';
-        	$stmt = $db->prepare($sql);
-        	$stmt->bindParam('UserID', $Id, PDO::PARAM_INT);
-        	$stmt->bindParam('uName', $uName, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('fName', $fName, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('sName', $lName, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('Address', $address1, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('Address2', $address2, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('City', $city, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('county', $county, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('Country', $country, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('Phone', $phone, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('Phone2', $phone2, PDO::PARAM_STR, 50);
-        	$stmt->bindParam('Color', $color, PDO::PARAM_STR, 6);
-        	
-        	$stmt->execute();
-        	$stmt->closeCursor();
+			echo "$color";
 
 		}
 
@@ -76,7 +61,7 @@
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
 
 
-<form action="regLect.php" method="post">
+<form action="EditProfile.php" method="post">
 <?php include 'header.html' ?>
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
   <script src="js/jquery-1.11.1.js"></script>
@@ -90,7 +75,7 @@
 	<div class="input-group">
 	  <p align="center">
 	    <label><b>First Name</b>:</label>
-	    <br><input placeholder="First Name" id="FirstNametbx" name="FirstnameTXT" type="text" class="form-control">
+	    <br><input id="FirstNametbx" <?php echo $fName; ?> name="FirstnameTXT" type="text" class="form-control">
       </p>
 	  <p align="center">
 	    <label><b>Last Name</b>: </label>
@@ -149,11 +134,7 @@
 	      <option value="France">France</option>
         </select>
       </p>
-	  <p align="center">
-<label><b>E-Mail</b>:</label>
-<br>
-<input placeholder="E-Mail" id="Emailtbx" name="EmailTXT" type="text" class="form-control" >
-      </p>
+
 	  <p align="center">
         <label><b>Phone</b>: </label>
 <br>
@@ -162,7 +143,7 @@
 	  <p align="center"><b>Mobile</b>:<br>
 	    <input placeholder="087 1234567" id="Phonetbx" name="Phone2TXT" type="text" class="form-control">
       </p>
-       <p align="center"><b>Mobile</b>:<br>
+       <p align="center"><b>Choose Colour</b>:<br>
 	    <input  id="Colortbx" name="ColorTXT" type="text" class="form-control color">
       </p>
       <br /><br />
