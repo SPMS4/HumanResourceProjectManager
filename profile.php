@@ -156,7 +156,7 @@ if(!isset($_SESSION))
             </div>          
       <input type="submit" class="btn btn-info" name="submit" value="view group" />
        <p class="btn btn-info">
-       <a href="EditProfile.php">Edit</a> 
+       <a style="color:#000"  href="EditProfile.php">Edit</a> 
        </p>     
           </div>
         </div>

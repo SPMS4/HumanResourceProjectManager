@@ -49,7 +49,15 @@ if ($('#drop-remove').is(':checked')) {
     $(this).remove();}},
 
 eventClick: function(calEvent, jsEvent, view) {
-
+        var id = calEvent.id;
+        var name = calEvent.title;
+        var start = calEvent.start;
+        $("#eventPop").text("you clicked the " + id + " " + name);
+        $("#upId").val(id);
+        $("#upTitle").val(name);
+        $("#upStartDate").val(calEvent.start);
+        $("#upEndDate").val(calEvent.end);
+        //$(".upLink").val(calEvent.link);
         $(".popupupdate").show();
         $(".popupupdate").focus();
 }

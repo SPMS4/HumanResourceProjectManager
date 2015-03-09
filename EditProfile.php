@@ -16,19 +16,19 @@
 
 			foreach ($db->query($sql) as $data) {
           $Id = $data['UserID'];
-          $fName = $data['fName'];
-          echo "$fName <br/>";
-          $sName = $data['sName'];
-          $Address=$data['Address'];
-          $Address2=$data['Address2'];
-          $city=$data['City'];
-          $county=$data['county'];
-          $Country=$data['Country'];
-          $Email=$data['Email'];
-          $Phone=$data['Phone'];
-          $Phone2=$data['Phone2'];
-          $CollegeName=$data['CollegeName'];
-          $CourseName=$data['CourseName'];
+          $ufName = $data['fName'];
+          echo "name is $ufName <br/>";
+          $usName = $data['sName'];
+          echo "name is $usName <br/>";
+          $uAddress=$data['Address'];
+          $uAddress2=$data['Address2'];
+          $ucity=$data['City'];
+          $ucounty=$data['county'];
+          $uCountry=$data['Country'];
+          $uEmail=$data['Email'];
+          $uPhone=$data['Phone'];
+          $uPhone2=$data['Phone2'];
+          $uColor = $data['Color'];
         }
 
 	if (isset($_POST['submit'])) 
@@ -42,14 +42,32 @@
 			$city = ($_POST['CityTownTXT']);
 			$county = ($_POST['CountySLCT']);
 			$country= ($_POST['CountrySLCT']);
-			//$email = ($_POST['EmailTXT']);
 			$phone = ($_POST['Phone1TXT']);
 			$phone2 = ($_POST['Phone2TXT']);
 			$color = ($_POST['ColorTXT']);
 
+			echo "$fName";
 			echo "$color";
 
-		}
+			$sql = 'CALL UpdateProfile(:exUserID, :exfName, :exsName, :exAddress, :exAddress2, :exCity, :exCountry, :exCounty, :exPhone, :exPhone2, :exColor)';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);
+        $stmt->bindParam(':exfName', $fName, PDO::PARAM_STR, 50);
+        $stmt->bindParam(':exsName', $lName, PDO::PARAM_STR,50);
+        $stmt->bindParam(':exAddress', $address1, PDO::PARAM_STR,50);
+        $stmt->bindParam(':exAddress2', $address2, PDO::PARAM_STR,50);
+        $stmt->bindParam(':exCity', $city, PDO::PARAM_STR,50);
+        $stmt->bindParam(':exCountry', $country, PDO::PARAM_STR,50);
+        $stmt->bindParam(':exCounty', $county, PDO::PARAM_STR,50);
+        $stmt->bindParam(':exPhone', $phone, PDO::PARAM_STR,12);
+        $stmt->bindParam(':exPhone2', $phone2, PDO::PARAM_STR,12);
+        $stmt->bindParam(':exColor', $color, PDO::PARAM_STR,6);
+        $stmt->execute();
+        $stmt->closeCursor();
+        header('Location: http://localhost/HumanResourceProjectManager/profile.php');
+            exit;
+
+}
 
 
 
@@ -68,91 +86,14 @@
   <script src="js/select2-3.5.2/select2.js"></script>
   <link rel="stylesheet" href="js/select2-3.5.2/select2.css">
   <body class="backgroundColorClass">
-<!--<div>
+<div>
 
 <div align="center" class="divColorClass">
 	
 	<h3><b>Personal Details</b></h3>
 	<div class="input-group">
 	  <p align="center">
-	    <label><b>First Name</b>:</label> <!-- <?php echo $fName;?> -->
-	 <!-- <br><input id="FirstNametbx"  name="FirstnameTXT" type="text" class="form-control" placeholder="Firstname">
-      </p>
-	  <p align="center">
-	    <label><b>Last Name</b>: </label>
-<br>
-<input placeholder="Last Name" id="Secondnametbx" name="SecondnameTXT" type="text" class="form-control">
-      </p>
-	  <p align="center"><b>Address 1</b>:<br>
-	    <input placeholder="Address 1" id="Address1tbx" name="Address1TXT" type="text" class="form-control">
-      </p>
-	  <p align="center"><b>Address 2</b>:<br>
-	    <input placeholder="Address 2" id="Address2tbx" name="Address2TXT" type="text" class="form-control">
-      </p>
-	  <p align="center"><b>City/Town</b>:<br>
-	    <input placeholder="City/town" id="CityTowntbx" name="CityTownTXT" type="text" class="form-control">
-      </p>
-	  <p align="center"><b>County</b>:<br>
-	    <select class="js-example-basic-single regpageSelectWidth" id="Countyslct" name="CountySLCT">
-	      <option value="Antrim">Antrim</option>
-	      <option value="Armagh">Armagh</option>
-	      <option value="Carlow">Carlow</option>
-	      <option value="Cavan">Cavan</option>
-	      <option value="Clare">Clare</option>
-	      <option value="Cork">Cork</option>
-	      <option value="Derry">Derry</option>
-	      <option value="Donegal">Donegal</option>
-	      <option value="Down">Down</option>
-	      <option value="Dublin">Dublin</option>
-	      <option value="Fermanagh">Fermanagh</option>
-	      <option value="Galway">Galway</option>
-	      <option value="Kerry" >Kerry</option>
-	      <option value="Kildare" >Kildare</option>
-	      <option value="Kilkenny" >Kilkenny</option>
-	      <option value="Laois" >Laois</option>
-	      <option value="Leitrim" >Leitrim</option>
-	      <option value="Limerick" >Limerick</option>
-	      <option value="Longford" >Longford</option>
-	      <option value="Louth" >Louth</option>
-	      <option value="Mayo" >Mayo</option>
-	      <option value="Meath" >Meath</option>
-	      <option value="Monaghan" >Monaghan</option>
-	      <option value="Offaly" >Offaly</option>
-	      <option value="Roscommon" >Roscommon</option>
-	      <option value="Sligo" >Sligo</option>
-	      <option value="Tipperary" >Tipperary</option>
-	      <option value="Tyrone" >Tyrone</option>
-	      <option value="Waterford" >Waterford</option>
-	      <option value="Westmeath" >Westmeath</option>
-	      <option value="Wexford" >Wexford</option>
-	      <option value="Wicklow" >Wicklow</option>
-        </select>
-      </p>
-      <p align="center"><b>country</b>:<br>
-	    <select class="js-example-basic-single regpageSelectWidth" id="Countryslct" name="CountrySLCT">
-	      <option value="Ireland">Ireland</option>
-	      <option value="Englang">England</option>
-	      <option value="France">France</option>
-        </select>
-      </p>
-
-	  <p align="center">
-        <label><b>Phone</b>: </label>
-<br>
-	    <input placeholder="0749735123" id="Phonetbx" name="Phone1TXT" type="text" class="form-control">
-      </p>
-	  <p align="center"><b>Mobile</b>:<br>
-	    <input placeholder="087 1234567" id="Phonetbx" name="Phone2TXT" type="text" class="form-control">
-      </p>
-       <p align="center"><b>Choose Colour</b>:<br>
-	    <input  id="Colortbx" name="ColorTXT" type="text" class="form-control color">
-      </p>
-      <br /><br />
-      <p align="center">
-      <input type="submit" class="btn btn-lg btn-info" name="submit" value="Update" />
-      </p>
-      </div>
-      </div>  -->
+	    <label><b>First Name</b>:</label>
       
       <div class="row ParaHeadFontColor">
     <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
@@ -172,22 +113,22 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<input placeholder="First Name" id="FirstNametbx" name="FirstnameTXT" type="text" class="form-control">
+				<input placeholder="First Name" id="FirstNametbx" value="<?php echo "$ufName"; ?>" name="FirstnameTXT" type="text" class="form-control">
 			</div>
             <div class="form-group">
-				<input placeholder="Last Name" id="Secondnametbx" name="SecondnameTXT" type="text" class="form-control">
+				<input placeholder="Last Name" id="Secondnametbx" value="<?php echo "$usName"; ?>" name="SecondnameTXT" type="text" class="form-control">
 			</div>
             <div class="form-group">
-				 <input placeholder="Address 1" id="Address1tbx" name="Address1TXT" type="text" class="form-control">
+				 <input placeholder="Address 1" id="Address1tbx" value="<?php echo "$uAddress"; ?>" name="Address1TXT" type="text" class="form-control">
 			</div>
             <div class="form-group">
-				<input placeholder="Address 2" id="Address2tbx" name="Address2TXT" type="text" class="form-control">
+				<input placeholder="Address 2" id="Address2tbx" value="<?php echo "$uAddress2"; ?>" name="Address2TXT" type="text" class="form-control">
 			</div>
             <div class="form-group">
-				 <input placeholder="City/town" id="CityTowntbx" name="CityTownTXT" type="text" class="form-control">
+				 <input placeholder="City/town" id="CityTowntbx" value="<?php echo "$ucity"; ?>" name="CityTownTXT" type="text" class="form-control">
 			</div>
              <div class="form-group">
-				<select class="js-example-basic-single regpageSelectWidth" id="Countyslct" name="CountySLCT">
+				<select class="js-example-basic-single regpageSelectWidth" id="Countyslct" value="<?php echo "$ucounty"; ?>" name="CountySLCT">
 	      <option value="Antrim">Antrim</option>
 	      <option value="Armagh">Armagh</option>
 	      <option value="Carlow">Carlow</option>
@@ -223,7 +164,7 @@
         </select>
 			</div>
              <div class="form-group">
-				<select class="js-example-basic-single regpageSelectWidth" id="Countryslct" name="CountrySLCT">
+				<select class="js-example-basic-single regpageSelectWidth" value="<?php echo "$country"; ?>" id="Countryslct" name="CountrySLCT">
 	      <option value="Ireland">Ireland</option>
 	      <option value="Englang">England</option>
 	      <option value="France">France</option>
@@ -232,13 +173,13 @@
 			<div class="form-group">
 			</div>
             	<div class="form-group">
-				   <input placeholder="Phone" id="Phonetbx" name="Phone1TXT" type="text" class="form-control">
+				   <input placeholder="Phone" id="Phonetbx" value="<?php echo "$uPhone"; ?>" name="Phone1TXT" type="text" class="form-control">
 			</div>
             	<div class="form-group">
-				<input placeholder="Mobile" id="Phonetbx" name="Phone2TXT" type="text" class="form-control">
+				<input placeholder="Mobile" id="Phonetbx" value="<?php echo "$uPhone2"; ?>" name="Phone2TXT" type="text" class="form-control">
 			</div>
 			<div class="form-group">
-				  <input  id="Colortbx" name="ColorTXT" type="text" class="form-control color">
+				  <input  id="Colortbx" name="ColorTXT" type="text" value="<?php echo "$uColor"; ?>" class="form-control color">
 			</div> 
 				
 				
@@ -246,7 +187,7 @@
 				<div align="center" class="col-xs-4 col-sm-3 col-md-3">
 					<span class="button-checkbox">
                     <p align="center">
-				 <input type="submit" class="btn btn-lg btn-info" name="submit" value="register" /></p>
+				 <input type="submit" class="btn btn-lg btn-info" name="submit" value="Update" /></p>
 					</span>
 				</div>
 				

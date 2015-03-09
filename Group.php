@@ -122,13 +122,24 @@ echo "accept";
 			 $newEndDate = date("Y-m-d", strtotime($taskEventEnd));
 			 echo "$newStartDate<br/>";
 
-       // $input = "2015-02-19";
-       // $info = date_parse($input);
-        $color = "ff0ff0";
-           
+        
+        	//$color = $color['Color']; //Get colour from users table, column color
+        //$Id=$_SESSION["Id"];
+        //$num = 2;
+        $sqlCol = 'CALL UserColour (:exUserID, @iColor)';
+        $stmt = $db->prepare($sqlCol);
+        $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->closeCursor(); 
+        $resuCol = $db->query("SELECT @iColor AS col")->fetch(PDO::FETCH_ASSOC);
+        if ($resuCol) {
+        $color = $resuCol['col'];
+        echo "color = $color <br/>";
+        }  
+
         $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exColor, @exNewId)';
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
+        $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR, 50);
         $stmt->bindParam(':exBacklog', $backlogResult, PDO::PARAM_LOB );
         $stmt->bindParam(':exStartDate', $newStartDate, PDO::PARAM_LOB);
         $stmt->bindParam(':exEndDate', $newEndDate, PDO::PARAM_LOB);
@@ -158,20 +169,34 @@ echo "accept";
             exit;
 
 }
-
+if (isset($_POST['acceptbut1'])) {
 ///update task event-----------------------------------------------------------------------------------------------------
 //WE NEED TO EXECUTE THIS SRPOC TO UPDATE A TASKEVENT AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
-//$sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exDesc, :exTaskEventID)';
-//        $stmt = $db->prepare($sql);
-//        $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
-//        $stmt->bindParam(':exBacklog', $backlog, PDO::PARAM_LOB );
-//        $stmt->bindParam(':exStartDate', $taskEventStart, PDO::PARAM_LOB);
-//        $stmt->bindParam(':exEndDate', $taskEventEnd, PDO::PARAM_LOB);
- //       $stmt->bindParam(':GroupID', $groupId, PDO::PARAM_INT);
- //       $stmt->bindParam(':exDesc', $taskEventDescription, PDO::PARAM_STR, 1000);
- //       $stmt->bindParam(':exTaskEventID', $taskEventID, PDO::PARAM_INT);
- //       $stmt->execute();
- //       $stmt->closeCursor();
+$upTasktitle = $_POST['upTitle'];
+        $backlog = 1;
+
+        $upTaskStart = $_POST['upStartDate'];
+        $upTaskEnd = $_POST['upEndDate'];
+             echo "<br>START DATE : $upTaskStart</br>";
+             //$dateToday = date("03-04-2015");
+			 $newStartDate = date("Y-m-d", strtotime($upTaskStart));
+			 $newEndDate = date("Y-m-d", strtotime($upTaskEnd));
+		$taskEventID = $_POST['upId'];
+		$desc = "";
+		echo "id";
+			 
+
+$sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exDesc, :exTaskEventID)';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':exTitle', $upTasktitle, PDO::PARAM_STR,  50);
+        $stmt->bindParam(':exBacklog', $backlog, PDO::PARAM_LOB );
+        $stmt->bindParam(':exStartDate', $newStartDate, PDO::PARAM_LOB);
+        $stmt->bindParam(':exEndDate', $newEndDate, PDO::PARAM_LOB);
+        $stmt->bindParam(':GroupID', $groupId, PDO::PARAM_INT);
+        $stmt->bindParam(':exDesc', $desc, PDO::PARAM_INT);
+        $stmt->bindParam(':exTaskEventID', $taskEventID, PDO::PARAM_INT); //get taskeventId for task/event clicked
+        $stmt->execute();
+        $stmt->closeCursor();
 
  ///update NOTE URL-----------------------------------------------------------------------------------------------------
 //WE NEED TO EXECUTE THIS SRPOC TO UPDATE A NOTEURL AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
@@ -183,6 +208,10 @@ echo "accept";
         //$stmt->bindParam(':exUrl', $url, PDO::PARAM_LOB);
      //   $stmt->execute();
      //   $stmt->closeCursor();
+
+        header('Location: http://localhost/HumanResourceProjectManager/Group.php');
+            exit;
+    }
 
 ?>
 <form id="Group" action="Group.php" method="POST">
@@ -267,7 +296,7 @@ echo "accept";
 
 		<div style='clear:both'></div>
 		
-		<div class="popup">
+		<div class="popup" style="color:#000;background-color:#fff">
 		<h3>Add to the Calander</h3>
 		<form id="popform" action="Group.php" method="POST">
 		<select id="selectevent" name="selectevent" onchange="eventoption(this.value)" >
@@ -298,14 +327,14 @@ echo "accept";
 		<aside><input  type="text" id="Enddatepicker" name="Enddate"  placeholder="dd/mm/yyyy"></aside>	
 		<br/>
 		<br/>
-		<label id="lbstarttime" for="startTimepicker" > Start Time:</label>
+		<!--<label id="lbstarttime" for="startTimepicker" > Start Time:</label>
 		<aside><input  type="text" id="startTimepicker" name="startTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>	
 		<br/>
 		<br/>
 		<label id="lbendtime" for="endTimepicker" > End Time:</label>
 		<aside><input  type="text" id="endTimepicker" name="endTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>
-
-			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut"  style="" onclick="addCalanderEvent()"   value="Accept0" />
+-->
+			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut"  style="" onclick="addCalanderTask()"   value="Accept0" />
 
 
 
@@ -320,38 +349,38 @@ echo "accept";
 		</form>
 		</div>
     
-    <div class="popupupdate">
-    <h3>You clicked then event</h3>
-    <form id="popform">
+    <div class="popupupdate" style="color:#000">
+    <form id="popform" action="Group.php" method="POST">
+    <h3 id="eventPop">You clicked then event</h3>
     <!--onchange="eventoption(this.value)" class="js-example-basic-single" -->
-
+    <input type="text" id="upId" name="upId" hidden />
 
     <section> Event Title: </section>
-    <aside><input type="text" id="Title" placeholder="Project Title" ></aside>
+    <aside><input type="text" id="upTitle" placeholder="Project Title" name="upTitle"></aside>
     <br />
     <br />
     <section> Start Date: </section>
-    <aside><input type="text" id="Startdatepicker" placeholder="dd/mm/yyyy"></aside>
+    <aside><input type="text" id="upStartDate" placeholder="dd/mm/yyyy" name="upStartDate"></aside>
     <br/>
     <br/>
     <section id="endname"> End Date: </section>
-    <aside><input type="text" id="Enddatepicker" style="visability:hidden;" placeholder="dd/mm/yyyy"></aside> 
+    <aside><input type="text" id="upEndDate" style="visability:hidden;" name="upEndDate" placeholder="dd/mm/yyyy"></aside> 
     <br/>
     <br/>
 
     <section id="notecont"> Notes :
-    <aside><TEXTAREA id="Note"  type="text" rows="10" maxlenght="1000" wrap="hard" placeholder="Enter text here..........."></TEXTAREA></aside></section>
+    <aside><TEXTAREA id="Note"  type="text" rows="10" maxlenght="1000" name="upNote" wrap="hard" placeholder="Enter text here..........."></TEXTAREA></aside></section>
     
     <section id="linkcont"> Relevent Link :
-    <aside><input  id="Link" type="url" placeholder="www.Website.com"></input></aside></section>
-
-    <button type="button" id="acceptbut" onclick = "pophideupdate()" style="">Accept</button>
+    <aside><input  id="Link" type="url" placeholder="www.Website.com" name="upLink"></input></aside></section>
+			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut1"  style="" onclick="addCalanderTask()"   value="Accept" />
+    <!--<button type="button" id="acceptbut" onclick = "pophideupdate()" style="">Accept</button>-->
     <button type="button" id="cancelbut" onclick = "pophideupdate()" style="">Cancel</button>
 
     </form>
     </div>
 
-    <div class="popupdrop">
+    <div class="popupdrop" style="color:#000;background-color:#fff">
     <h3>You droped the event</h3>
     <form id="popform">
     <!--onchange="eventoption(this.value)" class="js-example-basic-single" -->
