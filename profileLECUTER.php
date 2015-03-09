@@ -7,8 +7,8 @@ require_once 'dbconfig.php';
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         session_start();
-        //$Id=$_SESSION["Id"];
-        $Id = 27;
+        $Id=$_SESSION["Id"];
+        //$Id = 27;
         $sql = "SELECT *
                 FROM users 
                 where UserID=$Id"; 

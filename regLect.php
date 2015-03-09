@@ -24,15 +24,7 @@
 			$pass = ($pass1);
 			$fName = ($_POST['FirstnameTXT']);
 			$lName = ($_POST['SecondnameTXT']);
-			$address1 = ($_POST['Address1TXT']);
-			$address2 = ($_POST['Address2TXT']);
-			$city = ($_POST['CityTownTXT']);
-			$county = ($_POST['CountySLCT']);
-			$country= ($_POST['CountrySLCT']);
 			$email = ($_POST['EmailTXT']);
-			$phone = ($_POST['Phone1TXT']);
-			$phone2 = ($_POST['Phone2TXT']);
-			$college = ($_POST['CollegeSlct']);
 
 			$status = "lecturer";
 
@@ -55,8 +47,8 @@
         if ($nme == 0) {
 			//insert 
 			$queryInsert ="
-			INSERT INTO users  (uName, pass, UserCurrentStatus , fName, sName, Address, Address2, City, county, Country, Email, Phone, Phone2, CollegeName) 
-			VALUES('".$uName."', '".$pass."', '".$status."', '".$fName."','".$lName."', '".$address1."', '".$address2."', '".$city."', '".$county."', '".$country."', '".$email."', '".$phone."', '".$phone2."', '".$college."')
+			INSERT INTO users  (uName, pass, UserCurrentStatus , fName, sName, Email) 
+			VALUES('".$uName."', '".$pass."', '".$status."', '".$fName."','".$lName."', '".$email."')
 			";
 
 
@@ -77,7 +69,7 @@
 			$_SESSION["Id"] = "$Id";
 
 
-			header('Location: http://localhost/updatedPrj300/profile.php');
+			header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             exit;
 			}
 			else{
