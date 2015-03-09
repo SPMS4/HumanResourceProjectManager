@@ -94,18 +94,22 @@
 ?>
 
 <?php include 'Header.html'; ?>
+<body class="backgroundColorClass ParaHeadFontColor">
 <form action="regStudent.php" method="post">
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
   <script src="js/jquery-1.11.1.js"></script>
+   <script src="bootstrap/js/bootstrap.min.js"></script>
   <script src="js/select2-3.5.2/select2.js"></script>
   <link rel="stylesheet" href="js/select2-3.5.2/select2.css">
+  <link href="css/SMPMccs.css" rel="stylesheet" type="text/css" />
 <title>SPMS</title>
-<div>
-<div align="center" class="jumbotron" style="background-color:#FFF;float:left;padding:100px">
+
+<!--<div>
+<div align="center" class="regpageDivAlign regpageDivAlignHegiht" >
 	<h3 align="center"><b>Choose Login details</b></h3>
     <div class="input-group">
-	<p align="center"><b>Student Number</b>:<br>
-	  <input placeholder="studentName" id="Usernametbx" name="UsernameTXT" type="text" class="form-control">
+	<p align="center"><b>UserName</b>:<br>
+	  <input placeholder="Username" id="Usernametbx" name="UsernameTXT" type="text" class="form-control">
   </p>
 	<p align="center"><b>Password</b>:<br>
 	  <input placeholder="Password" id="Passwordtbx" name="PasswordTXT" type="text" class="form-control">
@@ -118,7 +122,7 @@
 </div>
 </div>
 
-<div align="center" class="jumbotron" style="background-color:#FFF;float:left;padding:90px;">
+<div align="center"  class="regpageDivAlign">
 	
 	<h3><b>Personal Details</b></h3>
 	<div class="input-group">
@@ -195,12 +199,16 @@
       </p>
 	  <p align="center"><b>Mobile</b>:<br>
 	    <input placeholder="087 1234567" id="Phonetbx" name="Phone2TXT" type="text" class="form-control">
+        <br />
+        <br />
+        <input type="submit" class="btn btn-lg btn-info" name="submit" value="register" />
       </p>
+      
       </div>
       </div>
       
       
-      <div align="center" class="jumbotron" style="background-color:#FFF;float:left;padding:100px">
+      <div align="center"  class="regpageDivAlign regpageDivAlignHegiht">
       <h3><b>College Details</b></h3>
       <p align="center"><b>College</b></p>
           <select class="js-example-basic-single" id="collegeSelect" name="CollegeSlct">
@@ -221,7 +229,7 @@
         
         <br />
         <p align="center"><b>Course</b></p>
-        <!-- Will need to population from db depending on deparment-->
+         Will need to population from db depending on deparment
           <select class="js-example-basic-single" id="Courseslct" name="CourseSLCT">
 	      <option value="Science">Science</option>
 	      <option value="Computing">Comptuing</option>
@@ -230,11 +238,87 @@
         </select>
         <br/>
         <br/>
-		<input type="submit" class="btn btn-lg btn-info" name="submit" value="register" />
+		
 
-      </div>
+      </div> -->
+   	<div class="container">
+
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+		<form role="form">
+			<h2 align="center">Sign Up Here</h2>
+			<hr class="colorgraph">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+                          <input placeholder="Username" id="Usernametbx" name="UsernameTXT" type="text" class="form-control">
+					</div>
+                    <div class="form-group">
+                        <input placeholder="Password" id="Passwordtbx" name="PasswordTXT" type="password" class="form-control">
+					</div>
+                    <div class="form-group">
+                        
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					
+                   <input placeholder="Re-Password" id="RePasswordtbx" name="RePasswordTXT" type="password" class="form-control">
+                   
+				</div>
+			</div>
+			<div class="form-group">
+				<input placeholder="First Name" id="FirstNametbx" name="FirstnameTXT" type="text" class="form-control">
+			</div>
+            <div class="form-group">
+				<input placeholder="Last Name" id="Secondnametbx" name="SecondnameTXT" type="text" class="form-control">
+			</div>
+            <div class="form-group">
+				
+			</div>
+            <div class="form-group">
+				
+			</div>
+            <div class="form-group">
+			
+			</div>
+             <div class="form-group">
+				
+			</div>
+             <div class="form-group">
+		
+			<div class="form-group">
+				<input placeholder="E-Mail" id="Emailtbx" name="EmailTXT" type="text" class="form-control" >
+			</div>
+            	<div class="form-group">
+			
+			</div>
+            	<div class="form-group">
+			
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+					
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+				
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div align="center" class="col-xs-4 col-sm-3 col-md-3">
+					<span class="button-checkbox">
+				 <input type="submit" class="btn btn-lg btn-info" name="submit" value="register" />
+					</span>
+				</div>
+				
+			</div>
+			
+    
       </form>
-	</form>
+			
 
 <!--
 <div class="jumbotron">
@@ -250,5 +334,5 @@
   $(".js-example-basic-single").select2();
 });	</script>
 
-<?php include 'Footer.html'; ?>
+
 

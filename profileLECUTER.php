@@ -35,17 +35,17 @@ require_once 'dbconfig.php';
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HRPM</title>
-
+<title>SPMS</title>
   <!-- Add files href and src here for use in the project -->
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="css/pageposition.css">
   <link href="css/Borders.css" rel="stylesheet" type="text/css">
+   <link href="css/SMPMccs.css" rel="stylesheet" type="text/css">
   <script src="js/jquery-1.11.1.js"></script>
 
 </head>
-<body>
+<body class="backgroundColorClass">
   <!--Header do not add to this div, add any content in the header.html file in the same folder,
   remember this changes all headers -->
   <div id="header"></div>
@@ -57,7 +57,7 @@ require_once 'dbconfig.php';
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
    
    
-          <div class="panel panel-info">
+          <div class="panel divColorClass">
             <div class="panel-heading">
               <h3 class="panel-title" name="name"><?php echo $name ?></h3>
             </div>
@@ -78,7 +78,7 @@ require_once 'dbconfig.php';
                   </dl>
                 </div>-->
                 <div class=" col-md-9 col-lg-9 "> 
-                  <table class="table table-user-information">
+                  <table class="table table-user-information ParaHeadFontColor">
                     <tbody>
                       <tr>
                       </tr>
@@ -154,6 +154,10 @@ if(!isset($_SESSION))
       
             </div>          
       <input type="submit" class="btn btn-info" name="submit" value="view group" />
+     <p class="btn btn-info">
+       <a style="color:#000"  href="EditProfile.php">Edit</a> 
+       </p> 
+      
           </div>
         </div>
       </div>
@@ -197,7 +201,6 @@ if(!isset($_SESSION))
 
   <!--footer do not add to this div, add any content in the footer.html file in the same folder,
   remember this changes all footers -->
-  <div id="footer"></div>
 </body>
 
   <!-- Add all scripts below here for functionality and processing for the site -->

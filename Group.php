@@ -186,25 +186,28 @@ echo "accept";
 
 ?>
 <form id="Group" action="Group.php" method="POST">
+
 <!DOCTYPE html>
 <html>
 <head>
+
 	<title></title>
 
+<link href="css/SMPMccs.css" rel="stylesheet" type="text/css">
 </head>
 
-<body>
+<body class="backgroundColorClass">
 <!--<body onload="addCalanderEvent('myEvent', 2015-02-19, 2015-02-22)">-->
-
 <?php include 'Header.html'; ?>
 
-<div id='Project Desc'>
-	<h1><?php echo "$prjName";?></h1>
-	<p> <?php echo "$prjDesc";?></p>
+
+<div align="center" id='Project Desc' style="ParaHeadFontColor">
+	<h1 style="color:#fff"><?php echo "$prjName";?></h1>
+	<p style="color:#fff"> <?php echo "$prjDesc";?></p>
 
 </div>
 
-<div id='bodyCal'>
+<div id='bodyCal' class="divColorClassCAL">
 <div id='wrap'>
 
 		<div id='external-events'>
@@ -220,7 +223,7 @@ echo "accept";
 			</p>
 
 		</div>
-		<div id='Students'>
+		<div id='Students' style="color:#000;">
 
 			<h4>students</h4>
 				<!--<select name="Students" size="4" style="width: 110px; overflow:hidden;" >-->
@@ -260,7 +263,7 @@ echo "accept";
     </button> 
     
 
-		<div id='calendar'></div>
+		<div id='calendar' style="background-color:#fff"></div>
 
 		<div style='clear:both'></div>
 		
@@ -302,19 +305,18 @@ echo "accept";
 		<label id="lbendtime" for="endTimepicker" > End Time:</label>
 		<aside><input  type="text" id="endTimepicker" name="endTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>
 
-
-
 			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut"  style="" onclick="addCalanderEvent()"   value="Accept0" />
 
 
 
 		<button><input type="submit" id="cancelbut" class="btn btn-info" name="cancelbut" onclick = "pophide()"style="" value="cancel" /></button>	
 		<section id="notecont"> Notes :
-		<aside><TEXTAREA id="Note" name="Note" class="form-control"  type="text" rows="8" maxlenght="100" wrap="hard" placeholder="Enter text here..........."></TEXTAREA><br></aside></section>
-		
+		<aside><TEXTAREA id="Note" name="Note" class="form-control"  type="text" rows="3" cols="3" maxlenght="50" wrap="hard" placeholder="Enter text here..........."></TEXTAREA><br></aside></section>
+	
 		<section id="linkcont"> Relevent Link :
 		<aside><input id="Link" name="Link" type="url" class="form-control" placeholder="www.Website.com"></input></aside></section>
-         </div>
+       
+        
 		</form>
 		</div>
     
@@ -384,16 +386,7 @@ echo "accept";
 
 </div>
 
-<div id="footer" class="navbar navbar-default navbar-fixed-bottom">
-	<div class="container">
-		<p>
-        	HRPM Project:Made my Tomás Mc Mahon,Greg Sheerin,Cormac Hallinan,John Mc Gowan.Made for PJR300 
-        	<a href="about.html">About</a>
-			<a onclick="div_showcontact()">Contact</a>
-			<a onclick="div_show()">Register?</a>
-		</p>
-	</div>
-</div>
+
 
 
 </body>
@@ -443,7 +436,7 @@ window.onload = function addCalanderTask( id, title, start, end, color)
      var taskEnd = data[i].taskEnd;
      var taskColor = data[i].taskColor;
 
-     var eventObject = {
+     var taskObject = {
     title: taskName,
     start: taskStart,
     end: taskEnd,
@@ -451,7 +444,7 @@ window.onload = function addCalanderTask( id, title, start, end, color)
     color: taskColor
     };
 
-    $('#calendar').fullCalendar('renderEvent', eventObject, true);
+    $('#calendar').fullCalendar('renderEvent', taskObject, true);
   } 
 
 var data = <?php echo json_encode($jsData1) ?>;
