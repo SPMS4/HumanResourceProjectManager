@@ -52,7 +52,7 @@ if ($Id >= 1) {
           header('Location: http://localhost/HumanResourceProjectManager/login.php');
             exit;
         }
-include 'Header2.html'; 
+ 
 
 
 ?>
@@ -73,14 +73,16 @@ include 'Header2.html';
 </head>
 
 <body class="backgroundColorClass">
+<?php //must be inside body or else will break
+ include 'Header2.html'; ?> <!--this must be in body or otherwise it can break the page -->
   <!--Header do not add to this div, add any content in the header.html file in the same folder,
   remember this changes all headers -->
   
   <!-- This is the main body for this page, add content here for this page -->
     <div class="container">
-      <div class="row">
+      <div class="row ">
     
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad " >
    
    
           <div class="panel divColorClass">

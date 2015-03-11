@@ -81,6 +81,7 @@
        //var_dump($arrVal1);
 
 
+
        //project details       
          $sql = 'CALL ProjectDetailsForGroup(:exGroupID)';
         $stmt = $db->prepare($sql);
@@ -93,7 +94,8 @@
             $prjDesc = $prj['Description'];
             $prjName = $prj['ProjectName'];
          }
-           // echo "$prjId and $prjName";
+           
+           
 
      }
       catch (PDOException $pe){
@@ -172,12 +174,10 @@ if (isset($_POST['acceptbut'])) {
 if (isset($_POST['acceptbut1'])) {
 ///update task event-----------------------------------------------------------------------------------------------------
 //WE NEED TO EXECUTE THIS SRPOC TO UPDATE A TASKEVENT AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
-$upTasktitle = $_POST['upTitle'];
+        $upTasktitle = $_POST['upTitle'];
         $backlog = 1;
-
         $upTaskStart = $_POST['upStartDate'];
         $upTaskEnd = $_POST['upEndDate'];
-             echo "<br>START DATE : $upTaskStart</br>";
              //$dateToday = date("03-04-2015");
 			 $newStartDate = date("Y-m-d", strtotime($upTaskStart));
 			 $newEndDate = date("Y-m-d", strtotime($upTaskEnd));
@@ -196,17 +196,19 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
         $stmt->bindParam(':exTaskEventID', $taskEventID, PDO::PARAM_INT); //get taskeventId for task/event clicked
         $stmt->execute();
         $stmt->closeCursor();
-
+ 
+        //$upNote = $_POST['upNote'];
+        //$upLink = $_POST['upLink'];
  ///update NOTE URL-----------------------------------------------------------------------------------------------------
 //WE NEED TO EXECUTE THIS SRPOC TO UPDATE A NOTEURL AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
-//$sql = 'CALL InsertNoteUrl0(:exTaskEventID, :exTitle, :exNote, :exUrl)';
-//        $stmt = $db->prepare($sql);
-  //      $stmt->bindParam(':exTaskEventID', $TaskEventId, PDO::PARAM_STR,  50);
-    //    $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
-      //  $stmt->bindParam(':exNote', $note, PDO::PARAM_LOB );
-        //$stmt->bindParam(':exUrl', $url, PDO::PARAM_LOB);
-     //   $stmt->execute();
-     //   $stmt->closeCursor();
+        //$sql = 'CALL InsertNoteUrl0(:exTaskEventID, :exTitle, :exNote, :exUrl)';
+       // $stmt = $db->prepare($sql);
+       /// $stmt->bindParam(':exTaskEventID', $TaskEventId, PDO::PARAM_INT);
+       // $stmt->bindParam(':exTitle', $upTasktitle, PDO::PARAM_STR,  50);
+       // $stmt->bindParam(':exNote', $upNote, PDO::PARAM_STR,  100 );
+       // $stmt->bindParam(':exUrl', $upLink, PDO::PARAM_STR,  2083);
+       // $stmt->execute();
+       //$stmt->closeCursor();
 
         header('Location: http://localhost/HumanResourceProjectManager/Group.php');
             exit;
@@ -306,7 +308,6 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
   			<option disabled>---------------------</option>
   			<option value="1">All Day Event</option>
   			<option value="2">Dated Event </option>
-  			<option value="3">Time event</option>
 		</select>
 		<br />
 		<br />

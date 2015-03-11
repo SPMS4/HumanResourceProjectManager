@@ -15,23 +15,39 @@ session_start();
         $USERNAME = $_POST['LIUsernameTXT'];
         $PASSWORD = md5($_POST['LIPasswordTXT']);
         
-        $sql = "SELECT UserID, uName, pass
-        		FROM users 
-        		WHERE uName='$USERNAME' and pass='$PASSWORD'";
-       
-        $log = $db->query($sql);
-$logAttempt = 1;
-        if($log->rowCount() == 1)
+       // $sql = "SELECT UserID, uName, pass
+       // 		FROM users 
+       // 		WHERE uName='$USERNAME' and pass='$PASSWORD'";       
+       // $log = $db->query($sql);
+
+        $sqlCheck = 'CALL LoginUser(:exUserName, :exPassword, @names)';
+        $stmtCheck = $db->prepare($sqlCheck);
+        $stmtCheck->bindParam(':exUserName', $USERNAME, PDO::PARAM_STR, 50);
+        $stmtCheck->bindParam(':exPassword', $PASSWORD, PDO::PARAM_STR, 50);
+        $stmtCheck->execute();
+        $stmtCheck->closeCursor();
+        $resu = $db->query("SELECT @names AS names")->fetch(PDO::FETCH_ASSOC);
+        if ($resu) {
+        $nmes = $resu['names'];
+        //$uId = $resu['UserID'];
+        //echo "$uId";
+      }
+
+
+        //if($log->rowCount() == 1)
+        if($nmes == 1)
         {
-            $logAttempt = 1;
-        	//$query = mysqli_query($db,"SELECT * 
-           //                     FROM users 
-           //                     where uName='$USERNAME');
-        	foreach ($db->query($sql) as $data) {
-          		$Id = $data['UserID'];
-      		}
-            $_SESSION["Id"] = "$Id";
-            echo "$Id";
+        	echo "logged in";
+            
+
+          	$sql = "SELECT *
+                FROM users 
+                where uName='".$USERNAME."'";
+       
+        foreach ($db->query($sql) as $data) {
+          $Id = $data['UserID'];
+        }
+            $_SESSION["Id"] = $Id;
 
             header('Location: http://localhost/HumanResourceProjectManager/profile.php');
                         exit;

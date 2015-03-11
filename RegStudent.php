@@ -256,10 +256,10 @@ require_once 'dbconfig.php';
 			<div class="row">
 				<div class="col-xs-12 col-sm-6 col-md-6">
 					<div class="form-group">
-                          <input placeholder="Username" id="Usernametbx" name="UsernameTXT" type="text" class="form-control">
+                          <input placeholder="Username" id="Usernametbx" name="UsernameTXT" type="text" class="form-control" required>
 					</div>
                     <div class="form-group">
-                        <input placeholder="Password" id="Passwordtbx" name="PasswordTXT" type="password" class="form-control">
+                        <input placeholder="Password" id="Passwordtbx" name="PasswordTXT" type="password" class="form-control" pattern=".{6,}" title="Password must have atleast 6 characters" required>
 					</div>
                     <div class="form-group">
                         
@@ -267,15 +267,15 @@ require_once 'dbconfig.php';
 				</div>
 				<div class="col-xs-12 col-sm-6 col-md-6">
 					
-                   <input placeholder="Re-Password" id="RePasswordtbx" name="RePasswordTXT" type="password" class="form-control">
+                   <input placeholder="Re-Password" id="RePasswordtbx" name="RePasswordTXT" type="password" class="form-control" required>
                    
 				</div>
 			</div>
 			<div class="form-group">
-				<input placeholder="First Name" id="FirstNametbx" name="FirstnameTXT" type="text" class="form-control">
+				<input placeholder="First Name" id="FirstNametbx" name="FirstnameTXT" type="text" class="form-control"  title="please enter a vaild name" required>
 			</div>
             <div class="form-group">
-				<input placeholder="Last Name" id="Secondnametbx" name="SecondnameTXT" type="text" class="form-control">
+				<input placeholder="Last Name" id="Secondnametbx" name="SecondnameTXT" type="text" class="form-control"  title="please enter a vaild name" required>
 			</div>
             <div class="form-group">
 				
@@ -292,7 +292,7 @@ require_once 'dbconfig.php';
              <div class="form-group">
 		
 			<div class="form-group">
-				<input placeholder="E-Mail" id="Emailtbx" name="EmailTXT" type="text" class="form-control" >
+				<input placeholder="E-Mail" id="Emailtbx" name="EmailTXT" type="email" class="form-control">
 			</div>
             	<div class="form-group">
 			
