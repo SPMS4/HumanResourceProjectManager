@@ -1,3 +1,16 @@
+<?php
+		session_start();
+        $Id=$_SESSION["Id"];
+        
+        if ($Id == null) {
+		include 'Header.html'; 
+        	
+        }
+        else
+		include 'Header2.html'; 
+        	
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,8 +28,8 @@
 </head>
 <body class="backgroundColorClass">
 	<!--Header do not add to this div, add any content in the header.html file in the same folder,
-	remember this changes all headers -->
-	<div id="header"></div>
+	remember this changes all headers 
+	<div id="header"></div>-->
 
 	<!-- This is the main body for this page, add content here for this page -->
    
