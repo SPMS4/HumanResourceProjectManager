@@ -1,14 +1,10 @@
 <?php
 		session_start();
-        $Id=$_SESSION["Id"];
-        
-        if ($Id == null) {
-		include 'Header.html'; 
-        	
-        }
-        else
-		include 'Header2.html'; 
-        	
+		if (isset($_SESSION["Id"])) {
+			include 'Header2.html';
+		}
+		else
+			include 'Header.html';  
 ?>
 
 <!DOCTYPE html>
