@@ -1,7 +1,6 @@
 <?php
 session_start();
   $Id=$_SESSION["Id"];
-  echo "$Id";
     require_once 'dbconfig.php';
 
 if (isset($_POST['submit'])) 
@@ -31,7 +30,6 @@ if (isset($_POST['submit']))
              header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             exit;
         
-        echo "in";
       } 
       catch (PDOException $pe){
         die("Error occurred:" . $pe->getMessage());
@@ -42,6 +40,7 @@ if (isset($_POST['submit']))
       } 
     
 }
+include 'Header2.html'; 
 
 ?>
 
@@ -57,7 +56,7 @@ if (isset($_POST['submit']))
       <script src="js/select2-3.5.2/select2.js"></script>
     <link rel="stylesheet" href="js/select2-3.5.2/select2.css">
 
-  <div id="header"></div>
+  
      
             <div class="jumbotron" style="background-color:#FFF">
                  <h2 align="center">Project Details</h2>

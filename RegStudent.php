@@ -1,9 +1,12 @@
 <?php
+require_once 'dbconfig.php';
+	$db = new PDO("mysql:host=$host;dbname=$dbname",
+                            $username, $password);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	if (isset($_POST['submit'])) 
 {
-        require_once 'dbconfig.php';
-	
+        
 
 		//verification of passwords
 		//PasswordTXT RePasswordTXT
@@ -43,27 +46,38 @@
         	$resu = $db->query("SELECT @Names AS names")->fetch(PDO::FETCH_ASSOC);
 
 			if ($resu) {
-        	echo sprintf('group name: %s', $resu['names']);
         	$nme = $resu['names'];
         }
         //start IF
         if ($nme == 0) {
 			//insert 
-			$queryInsert ="
-			INSERT INTO users  (uName, pass, UserCurrentStatus , fName, sName, Email) 
-			VALUES('".$uName."', '".$pass."', '".$status."', '".$fName."','".$lName."', '".$email."')
-			";
+			//$queryInsert ="
+			//INSERT INTO users  (uName, pass, UserCurrentStatus , fName, sName, Email) 
+			//VALUES('".$uName."', '".$pass."', '".$status."', '".$fName."','".$lName."', '".$email."')
+			//";
 			//uName pass1 pass2
-
 			//insert query
-			$insert_table = $db->query($queryInsert);
-			echo "Inserted";
+			//$insert_table = $db->query($queryInsert);
+
+        	$sql = 'CALL RegisterUser(:exUserName, :exPass, :exFName, :exSName, :exEmail, :exStatus)';
+        	$stmt = $db->prepare($sql);
+        	$stmt->bindParam(':exUserName', $uName, PDO::PARAM_STR, 50);
+        	$stmt->bindParam(':exPass', $pass, PDO::PARAM_STR, 50 );
+        	$stmt->bindParam(':exFName', $fName, PDO::PARAM_STR, 50 );
+        	$stmt->bindParam(':exSName', $lName, PDO::PARAM_STR, 50);
+        	$stmt->bindParam(':exEmail', $email, PDO::PARAM_STR, 254);
+        	$stmt->bindParam(':exStatus', $status, PDO::PARAM_STR, 50);
+        	$stmt->execute();
+        	$stmt->closeCursor();
+
 			//get UserID, username is unique
 			$sql = "SELECT UserID
         			FROM users 
         			WHERE uName='$uName'";
         			foreach ($db->query($sql) as $data) {
         				$Id = $data['UserID'];}
+
+        	echo "<br/>id is $Id.<br/>";
 			// Start the session
 			session_start();
 			$_SESSION["Id"] = "$Id";

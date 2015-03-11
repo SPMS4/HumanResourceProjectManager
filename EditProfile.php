@@ -2,7 +2,6 @@
 
 			session_start();
 			$Id=$_SESSION["Id"];
-			echo "id = $Id <br/>";
 
         require_once 'dbconfig.php';
 
@@ -17,9 +16,7 @@
 			foreach ($db->query($sql) as $data) {
           $Id = $data['UserID'];
           $ufName = $data['fName'];
-          echo "name is $ufName <br/>";
           $usName = $data['sName'];
-          echo "name is $usName <br/>";
           $uAddress=$data['Address'];
           $uAddress2=$data['Address2'];
           $ucity=$data['City'];
@@ -46,10 +43,7 @@
 			$phone2 = ($_POST['Phone2TXT']);
 			$color = ($_POST['ColorTXT']);
 
-			echo "$fName";
-			echo "$color";
-
-			$sql = 'CALL UpdateProfile(:exUserID, :exfName, :exsName, :exAddress, :exAddress2, :exCity, :exCountry, :exCounty, :exPhone, :exPhone2, :exColor)';
+		$sql = 'CALL UpdateProfile(:exUserID, :exfName, :exsName, :exAddress, :exAddress2, :exCity, :exCountry, :exCounty, :exPhone, :exPhone2, :exColor)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);
         $stmt->bindParam(':exfName', $fName, PDO::PARAM_STR, 50);
@@ -80,7 +74,7 @@
 
 
 <form action="EditProfile.php" method="post">
-<?php include 'header.html' ?>
+<?php include 'header2.html' ?>
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
   <script src="js/jquery-1.11.1.js"></script>
   <script src="js/select2-3.5.2/select2.js"></script>

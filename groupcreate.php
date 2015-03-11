@@ -2,7 +2,6 @@
 
 session_start();
   $Id=$_SESSION["Id"];
-  echo "$Id";
 
     require_once 'dbconfig.php';
 
@@ -15,7 +14,7 @@ $sql = "SELECT UserCurrentStatus
 
     foreach ($db->query($sql) as $status) {
     $stat = $status['UserCurrentStatus'];
-    echo "$stat";}
+    }
     
 
 if ($stat == "lecturer") {
@@ -24,9 +23,7 @@ if ($stat == "lecturer") {
   {
 
     $groupName = $_POST['groupName'];
-    echo "<br/>$groupName<br/>";
     $groupProject = $_POST['projectName'];
-    echo "$groupProject";
 
 
     
@@ -35,10 +32,8 @@ if ($stat == "lecturer") {
         $stmtCheck->bindParam(':exgroupname', $groupName, PDO::PARAM_STR, 50);
         $stmtCheck->execute();
         $stmtCheck->closeCursor();
-        echo "$groupName <br/>";
         $resu = $db->query("SELECT @groups AS name")->fetch(PDO::FETCH_ASSOC);
         if ($resu) {
-        echo sprintf('amt od groups: %s <br/>', $resu['name']);
         $nme = $resu['name'];
       }
 
@@ -109,6 +104,7 @@ if ($stat == "lecturer") {
     header('Location: http://localhost/HumanResourceProjectManager/profile.php');
            exit;
   }
+include 'Header2.html'; 
 
 ?>
 
@@ -149,7 +145,7 @@ if ($stat == "lecturer") {
 <body>
   <!--Header do not add to this div, add any content in the header.html file in the same folder,
   remember this changes all headers -->
-  <div id="header"></div>
+
 
   <!-- This is the main body for this page, add content here for this page -->
 

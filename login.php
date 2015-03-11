@@ -1,6 +1,7 @@
 <?php
         require_once 'dbconfig.php';
-echo "hi";
+        $logAttempt = 0;
+
 //-----------------------------
 if (isset($_POST['submit'])) {
 // Start the session
@@ -10,8 +11,6 @@ session_start();
         $db = new PDO("mysql:host=$host;dbname=$dbname",
                             $username, $password);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        echo "Connected to Database<br/>";
         
         $USERNAME = $_POST['LIUsernameTXT'];
         $PASSWORD = md5($_POST['LIPasswordTXT']);
@@ -21,9 +20,10 @@ session_start();
         		WHERE uName='$USERNAME' and pass='$PASSWORD'";
        
         $log = $db->query($sql);
-
+$logAttempt = 1;
         if($log->rowCount() == 1)
         {
+            $logAttempt = 1;
         	//$query = mysqli_query($db,"SELECT * 
            //                     FROM users 
            //                     where uName='$USERNAME');
@@ -37,7 +37,7 @@ session_start();
                         exit;
         }
         else
-            echo "wrong";
+            $logAttempt = 1;
 
         //Close Connection
         $db = null;
@@ -73,8 +73,14 @@ session_start();
                                     
                             <div style="margin-bottom: 25px" class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                       <input class="form-control" placeholder="UserName" id="LIUsernametbx" name="LIUsernameTXT" type="text">                                        
+                                       <input class="form-control" placeholder="UserName" id="LIUsernametbx" name="LIUsernameTXT" type="text">   
                                     </div>
+                                       <label><?php
+                                       if ($logAttempt >= 1) {
+                                           echo "incorrect";
+                                       } 
+                                       
+                                        ?></label>                                     
                                 
                             <div style="margin-bottom: 25px" class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>

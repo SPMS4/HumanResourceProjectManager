@@ -40,20 +40,28 @@
         	$resu = $db->query("SELECT @Names AS names")->fetch(PDO::FETCH_ASSOC);
 
 			if ($resu) {
-        	echo sprintf('group name: %s', $resu['names']);
         	$nme = $resu['names'];
         }
         //start IF
         if ($nme == 0) {
 			//insert 
-			$queryInsert ="
-			INSERT INTO users  (uName, pass, UserCurrentStatus , fName, sName, Email) 
-			VALUES('".$uName."', '".$pass."', '".$status."', '".$fName."','".$lName."', '".$email."')
-			";
-
-
+			//$queryInsert ="
+			//INSERT INTO users  (uName, pass, UserCurrentStatus , fName, sName, Email) 
+			//VALUES('".$uName."', '".$pass."', '".$status."', '".$fName."','".$lName."', '".$email."')
+			//";
 			//insert query
-			$insert_table = $db->query($queryInsert);
+			//$insert_table = $db->query($queryInsert);
+
+			$sql = 'CALL RegisterUser(:exUserName, :exPass, :exFName, :exSName, :exEmail, :exStatus)';
+        	$stmt = $db->prepare($sql);
+        	$stmt->bindParam(':exUserName', $uName, PDO::PARAM_STR, 50);
+        	$stmt->bindParam(':exPass', $pass, PDO::PARAM_STR, 50 );
+        	$stmt->bindParam(':exFName', $fName, PDO::PARAM_STR, 50 );
+        	$stmt->bindParam(':exSName', $lName, PDO::PARAM_STR, 50);
+        	$stmt->bindParam(':exEmail', $email, PDO::PARAM_STR, 254);
+        	$stmt->bindParam(':exStatus', $status, PDO::PARAM_STR, 50);
+        	$stmt->execute();
+        	$stmt->closeCursor();
 
 			//get UserID, username is unique
 			$sql = "SELECT UserID
@@ -63,11 +71,9 @@
         				$Id = $data['UserID'];
         			}
 
-        			echo "$Id hi";
 			// Start the session
 			session_start();
 			$_SESSION["Id"] = "$Id";
-
 
 			header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             exit;

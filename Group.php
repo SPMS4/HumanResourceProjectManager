@@ -9,11 +9,15 @@
         session_start();
         $Id=$_SESSION["Id"];
         $GroupId=$_SESSION["groupId"];
+        
+        if ($GroupId == null) {
+            header('Location: http://localhost/HumanResourceProjectManager/profile.php');
+            exit;
+        }
 
         $ar = array('Event 1', '2015-02-19', '2015-02-28' );
-       json_encode($ar);
+        json_encode($ar);
 
-        echo "$Id and group is $GroupId<br/>";
         try {
         // execute the stored procedure
         $sql = 'CALL SelectTask(:exGroupID)';
@@ -48,6 +52,7 @@
         ];
         }
         //var_dump($jsData);
+
 
             //proc for event SelectEvent
         $sql = 'CALL SelectEvent(:exGroupID)';
@@ -100,7 +105,6 @@
 if (isset($_POST['acceptbut'])) {
 // Start the session
 //session_start();
-echo "accept";
 		//  try {        
          //INSERT SPROC
         //$selectevent = $_POST['selectevent'];
@@ -116,11 +120,9 @@ echo "accept";
 
         $taskEventStart = $_POST['Startdate'];
         $taskEventEnd = $_POST['Enddate'];
-             echo "<br>START DATE : $taskEventStart</br>";
              //$dateToday = date("03-04-2015");
 			 $newStartDate = date("Y-m-d", strtotime($taskEventStart));
 			 $newEndDate = date("Y-m-d", strtotime($taskEventEnd));
-			 echo "$newStartDate<br/>";
 
         
         	//$color = $color['Color']; //Get colour from users table, column color
@@ -134,7 +136,6 @@ echo "accept";
         $resuCol = $db->query("SELECT @iColor AS col")->fetch(PDO::FETCH_ASSOC);
         if ($resuCol) {
         $color = $resuCol['col'];
-        echo "color = $color <br/>";
         }  
 
         $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exColor, @exNewId)';
@@ -150,7 +151,6 @@ echo "accept";
         $resu = $db->query("SELECT @exNewId AS ID")->fetch(PDO::FETCH_ASSOC);
         if ($resu) {
         $TaskEventId = $resu['ID'];
-        echo "id = $TaskEventId <br/>";
         }
 
          $note = $_POST['Note'];
@@ -183,7 +183,6 @@ $upTasktitle = $_POST['upTitle'];
 			 $newEndDate = date("Y-m-d", strtotime($upTaskEnd));
 		$taskEventID = $_POST['upId'];
 		$desc = "";
-		echo "id";
 			 
 
 $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exDesc, :exTaskEventID)';
@@ -227,7 +226,10 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
 
 <body class="backgroundColorClass">
 <!--<body onload="addCalanderEvent('myEvent', 2015-02-19, 2015-02-22)">-->
-<?php include 'Header.html'; ?>
+<?php 
+	include 'Header2.html'; 
+
+?>
 
 
 <div align="center" id='Project Desc' style="ParaHeadFontColor">
@@ -348,6 +350,8 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
         
 		</form>
 		</div>
+
+
     
     <div class="popupupdate" style="color:#000">
     <form id="popform" action="Group.php" method="POST">
@@ -458,7 +462,6 @@ window.onload = function addCalanderTask( id, title, start, end, color)
 
   //you now have to iterate through the data array and do something with the values
   for (var i = 0; i < data.length; i++) {
-     alert("the event name is " +data[i].taskName +" start " + data[i].taskId + " end " + data[i].eventEnd);
      var id = data[i].taskId;
      var taskName = data[i].taskName;
      var taskStart = data[i].taskStart;

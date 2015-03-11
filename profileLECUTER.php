@@ -8,7 +8,8 @@ require_once 'dbconfig.php';
         
         session_start();
         $Id=$_SESSION["Id"];
-        //$Id = 27;
+
+if ($Id >= 1) {
         $sql = "SELECT *
                 FROM users 
                 where UserID=$Id"; 
@@ -29,6 +30,31 @@ require_once 'dbconfig.php';
             exit;
         }
 
+        if (isset($_POST['submit'])) 
+          {
+            $selected = $_POST['groupLst'];
+            unset($_SESSION['groupId']);
+            //then
+            $_SESSION["groupId"] = "$selected";
+            header('Location: http://localhost/HumanResourceProjectManager/Group.php');
+            exit; 
+          }
+
+          if (isset($_POST['logOut'])) 
+          {
+            echo "hi";
+            unset($_SESSION['Id']);
+            header('Location: http://localhost/HumanResourceProjectManager/login.php');
+            exit;
+          }
+        }
+        else{
+          header('Location: http://localhost/HumanResourceProjectManager/login.php');
+            exit;
+        }
+include 'Header2.html'; 
+
+
 ?>
 <form id="popform" action="profileLECUTER.php" method="POST">
 
@@ -41,15 +67,15 @@ require_once 'dbconfig.php';
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="css/pageposition.css">
   <link href="css/Borders.css" rel="stylesheet" type="text/css">
-   <link href="css/SMPMccs.css" rel="stylesheet" type="text/css">
+   <!--<link href="css/SMPMccs.css" rel="stylesheet" type="text/css">-->
   <script src="js/jquery-1.11.1.js"></script>
 
 </head>
+
 <body class="backgroundColorClass">
   <!--Header do not add to this div, add any content in the header.html file in the same folder,
   remember this changes all headers -->
-  <div id="header"></div>
-
+  
   <!-- This is the main body for this page, add content here for this page -->
     <div class="container">
       <div class="row">
@@ -138,22 +164,13 @@ if(!isset($_SESSION))
           }
           echo "</select>";// Closing of list box
           
-              if (isset($_POST['submit'])) 
-          {
-            $selected = $_POST['groupLst'];
-            echo "hi ( $selected )";
-            echo "string";
-            unset($_SESSION['groupId']);
-            //then
-            $_SESSION["groupId"] = "$selected";
-            header('Location: http://localhost/HumanResourceProjectManager/Group.php');
-            exit; 
-          }
+
 
 ?>
       
             </div>          
       <input type="submit" class="btn btn-info" name="submit" value="view group" />
+      <input type="submit" class="btn btn-info" name="logOut" value="log out" />
      <p class="btn btn-info">
        <a style="color:#000"  href="EditProfile.php">Edit</a> 
        </p> 
@@ -211,7 +228,7 @@ if(!isset($_SESSION))
 
   <script> 
     $(function(){
-      $("#header").load("header.html"); 
+      
       $("#footer").load("footer.html"); 
     });
   </script> 
