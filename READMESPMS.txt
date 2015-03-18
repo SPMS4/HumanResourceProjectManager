@@ -2,12 +2,12 @@ you may need to configure your own localhost settings in the dbConfig file
 
 login 
   Username 	password
- - lecturer	asdfg
+ - lecturer	asdfgh
 
- -cormac	asdfg
- -greg		asdfg
- -tom		asdfg
- -john		asdfg
+ -cormac	asdfgh
+ -greg		asdfgh
+ -tom		asdfgh
+ -john		asdfgh
 
 Start on index page
 can then login or register as either lecturer

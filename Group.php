@@ -143,18 +143,20 @@ if (isset($_POST['acceptbut'])) {
         }  
 
         //insert the task/event details
-        $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exColor, @exNewId)';
+        $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exUserID, :exColor, @exNewId)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR, 50);
         $stmt->bindParam(':exBacklog', $backlogResult, PDO::PARAM_LOB );
         $stmt->bindParam(':exStartDate', $newStartDate, PDO::PARAM_LOB);
         $stmt->bindParam(':exEndDate', $newEndDate, PDO::PARAM_LOB);
         $stmt->bindParam(':GroupID', $GroupId, PDO::PARAM_INT);
+        $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);
         $stmt->bindParam(':exColor', $color, PDO::PARAM_STR, 6);
         $stmt->execute();
         $stmt->closeCursor();
         $resu = $db->query("SELECT @exNewId AS ID")->fetch(PDO::FETCH_ASSOC);
         if ($resu) {
+        	//get back id of task/event entered
         $TaskEventId = $resu['ID'];
         }
 
@@ -493,7 +495,7 @@ window.onload = function addCalanderTask( id, title, start, end, color)
      var taskStart = data[i].taskStart;
      var taskEnd = data[i].taskEnd;
      var taskColor = data[i].taskColor;
-
+     
      var taskObject = {
     title: taskName,
     start: taskStart,

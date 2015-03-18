@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2015 at 06:35 AM
+-- Generation Time: Mar 18, 2015 at 09:32 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -287,62 +287,10 @@ BEGIN
 
 INSERT INTO project ( ProjectName, ProjectStart, ProjectEnd, Description, datecreate ) VALUES ( proName, proStart, proEnd, proDescription, NOW() ) ;END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertTask`(exTaskName varchar(50),exTaskDescription varchar(2000),exTaskStartDate date,exTaskEndDate date)
-BEGIN
-
-/* Delcare Internal Variables*/
-Declare iCalendarID int DEFAULT 0;
-/*Declare iTaskID;*/
-
-/* Do any Reads */
-Select iCalendarID = CalendarID
-From calendar
-INNER JOIN  groups  on calendar.GroupID = groups.GroupID;/* * INNER JOIN `course` on user.course = course.id;/* */
-
-/*
-Select iTaskID = TaskID
-From task
-INNER JOIN 'calendar' on task.TaskID = calendar.TaskID;
-*/
-
-/* Business Logic*/
-
-/* Just Insert*/
-insert INTO task
- 
-(
-                
-CalendarID,
-                
-Description,
-                
-End_Date,
-                
-Name,
-
-Start_Date        
-)
-    
-VALUES 
-(
-iCalendarID,
-           
-exTaskDescription, 
-    
-exTaskEndDate, 
-    
-exTaskName,
-    
-exTaskStartDate 
-           
-) ; 
-
-/* END NIGHTMARE */
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertTaskEvent`(IN `exTitle` VARCHAR(50), IN `exBacklog` BIT, IN `exStartDate` DATE, IN `exEndDate` DATE, IN `exGroupID` INT, IN `exColor` VARCHAR(6), OUT `exNewId` INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertTaskEvent`(IN `exTitle` VARCHAR(50), IN `exBacklog` BIT, IN `exStartDate` DATE, IN `exEndDate` DATE, IN `exGroupID` INT, IN `exUserID` INT, IN `exColor` VARCHAR(6), OUT `exNewId` INT)
     NO SQL
 BEGIN
+
 /* Just Insert*/
 Insert into taskevents0
          (
@@ -352,6 +300,7 @@ Insert into taskevents0
              Backlog,
              color,
              GroupID,
+             UserID,
              DateCreated
          )
     VALUES 
@@ -362,9 +311,28 @@ Insert into taskevents0
            	 exBacklog,
              exColor,
              exGroupID,
+             exUserID,
              NOW()
          ) ;
     SET exNewId = LAST_INSERT_ID();
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LoginUser`(IN `exUserName` VARCHAR(50), IN `exPassword` VARCHAR(50), OUT `count` INT)
+    NO SQL
+Begin
+/*Select UserID
+From users
+Where uName = exUserName
+
+Select pass into iPassword
+From users
+Where Email = exEmail
+
+if iPassword != exPassword then */
+select count(*) INTO   count
+FROM users
+Where uName = exUserName and pass = exPassword;
 
 END$$
 
@@ -452,6 +420,14 @@ Select GroupID, GroupName
 From groups 
 WHERE UserID = exUserID;
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SelectNoteURL`(IN `exGroupId` INT, OUT `iNote` VARCHAR(1000), OUT `iLink` VARCHAR(2083))
+    NO SQL
+select nu.Note, nu.Link into iNote, iLink
+FROM taskevents0 te
+INNER JOIN noteurl nu
+ON te.TaskEventID = nu.TaskEventID
+Where GroupID = exGroupId$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SelectTask`(IN `exGroupID` INT)
     NO SQL
@@ -591,6 +567,16 @@ BEGIN
     WHERE TaskEventID = exTaskEventID;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateTaskEventColour`(IN `exUserID` INT, IN `exColor` VARCHAR(6))
+    NO SQL
+BEGIN 
+
+    UPDATE taskevents0
+    SET Color =  exColor
+    WHERE UserID = exUserID ; 
+
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `UserColour`(IN `exUserID` INT, OUT `iColor` VARCHAR(6))
     NO SQL
 BEGIN
@@ -614,14 +600,15 @@ CREATE TABLE IF NOT EXISTS `calendar` (
   `GroupID` int(11) DEFAULT NULL,
   PRIMARY KEY (`CalendarID`),
   KEY `GroupID` (`GroupID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
 
 --
 -- Dumping data for table `calendar`
 --
 
 INSERT INTO `calendar` (`CalendarID`, `GroupID`) VALUES
-(20, 150);
+(23, 153),
+(24, 154);
 
 -- --------------------------------------------------------
 
@@ -681,14 +668,15 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `UserID` int(11) DEFAULT NULL,
   `Color` varchar(6) DEFAULT NULL,
   PRIMARY KEY (`GroupID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=151 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=155 ;
 
 --
 -- Dumping data for table `groups`
 --
 
 INSERT INTO `groups` (`GroupID`, `ProjectID`, `GroupMember`, `GroupName`, `UserID`, `Color`) VALUES
-(150, 29, NULL, 'Spms', 1129, NULL);
+(153, 33, NULL, 'Spms', 1137, NULL),
+(154, 33, NULL, 'Trigger', 1143, NULL);
 
 -- --------------------------------------------------------
 
@@ -699,22 +687,24 @@ INSERT INTO `groups` (`GroupID`, `ProjectID`, `GroupMember`, `GroupName`, `UserI
 CREATE TABLE IF NOT EXISTS `noteurl` (
   `NoteURLID` int(11) NOT NULL AUTO_INCREMENT,
   `TaskEventID` int(11) NOT NULL,
-  `Note` varchar(100) DEFAULT NULL,
+  `GroupID` int(11) NOT NULL,
+  `UserID` int(11) NOT NULL,
+  `Note` varchar(1000) DEFAULT NULL,
   `Link` varchar(2083) DEFAULT NULL COMMENT 'Stack OverFlow Answer',
   `DateCreated` timestamp NOT NULL,
   `LastModified` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`NoteURLID`),
   KEY `fk_noteurl` (`TaskEventID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=73 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=89 ;
 
 --
 -- Dumping data for table `noteurl`
 --
 
-INSERT INTO `noteurl` (`NoteURLID`, `TaskEventID`, `Note`, `Link`, `DateCreated`, `LastModified`) VALUES
-(69, 185, 'Get design Ideas for the meeting event \r\nmonday the 22nd', '', '2015-03-11 05:17:04', NULL),
-(71, 187, '1st team meeting to discuss future of the \r\nproject', '', '2015-03-11 05:23:23', NULL),
-(72, 188, 'Design what goes on the pages and the \r\nfunction that each of them will do', '', '2015-03-11 05:25:15', NULL);
+INSERT INTO `noteurl` (`NoteURLID`, `TaskEventID`, `GroupID`, `UserID`, `Note`, `Link`, `DateCreated`, `LastModified`) VALUES
+(85, 206, 0, 0, 'Presentation of our Project at 10:20. Meet \r\nat dopios at 9:30', '', '2015-03-18 20:05:51', NULL),
+(87, 208, 0, 0, 'Get the Task and events to be showing on \r\nthe calendar', '', '2015-03-18 20:24:55', NULL),
+(88, 209, 0, 0, '', '', '2015-03-18 20:26:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -730,14 +720,14 @@ CREATE TABLE IF NOT EXISTS `project` (
   `ProjectEnd` date DEFAULT NULL,
   `datecreate` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`ProjectID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=35 ;
 
 --
 -- Dumping data for table `project`
 --
 
 INSERT INTO `project` (`ProjectID`, `Description`, `ProjectName`, `ProjectStart`, `ProjectEnd`, `datecreate`) VALUES
-(29, 'The description of the PRJ300 will be here. You can put in whatever description you want yourself and the students to see on the calendar page.', 'Prj300', '2015-03-11', '2015-04-01', '2015-03-11 05:12:36');
+(33, 'The Project 300 module is core to several streams in the programmes offered by Dept. Computing & Creative Practice. It represents an opportunity to undertake a substantial, independent, and unique body of work which can pull together many strands of study and provide a useful portfolio of students’ skills.', 'Prj300', '2014-10-01', '2015-03-19', '2015-03-18 19:59:53');
 
 -- --------------------------------------------------------
 
@@ -756,18 +746,18 @@ CREATE TABLE IF NOT EXISTS `taskevents0` (
   `DateCreated` timestamp NOT NULL,
   `DateLastModified` timestamp NULL DEFAULT NULL,
   `GroupID` int(11) NOT NULL,
+  `UserID` int(11) NOT NULL,
   PRIMARY KEY (`TaskEventID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=189 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=210 ;
 
 --
 -- Dumping data for table `taskevents0`
 --
 
-INSERT INTO `taskevents0` (`TaskEventID`, `StartDate`, `EndDate`, `Title`, `Backlog`, `color`, `Description`, `DateCreated`, `DateLastModified`, `GroupID`) VALUES
-(185, '2015-03-19', '2015-03-23', 'Design stage', b'1', '441FFF', '', '2015-03-11 05:17:04', '2015-03-11 05:19:26', 150),
-(186, '2015-03-22', '1970-01-01', 'dgd', b'1', '441FFF', '', '2015-03-11 05:17:50', '2015-03-11 05:21:17', 150),
-(187, '2015-03-25', '1970-01-01', 'Team Meeting 1', b'0', '9059FF', NULL, '2015-03-11 05:23:23', NULL, 150),
-(188, '2015-03-25', '2015-03-30', 'page design', b'1', 'FFF70A', NULL, '2015-03-11 05:25:15', NULL, 150);
+INSERT INTO `taskevents0` (`TaskEventID`, `StartDate`, `EndDate`, `Title`, `Backlog`, `color`, `Description`, `DateCreated`, `DateLastModified`, `GroupID`, `UserID`) VALUES
+(206, '2015-03-19', '1970-01-01', 'Presentation', b'0', 'FF1745', NULL, '2015-03-18 20:05:51', NULL, 153, 1137),
+(208, '2015-03-26', '2015-04-02', 'dispay task/events', b'1', 'FF1745', '', '2015-03-18 20:24:54', '2015-03-18 20:25:02', 153, 1137),
+(209, '2015-03-28', '2015-03-31', 'Login Page', b'1', '80FF00', '', '2015-03-18 20:26:47', '2015-03-18 20:27:26', 153, 1138);
 
 -- --------------------------------------------------------
 
@@ -782,17 +772,19 @@ CREATE TABLE IF NOT EXISTS `usergroup` (
   PRIMARY KEY (`UserGroupID`),
   KEY `UserID` (`UserID`),
   KEY `GroupID` (`GroupID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=75 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=86 ;
 
 --
 -- Dumping data for table `usergroup`
 --
 
 INSERT INTO `usergroup` (`UserID`, `GroupID`, `UserGroupID`) VALUES
-(1133, 150, 71),
-(1132, 150, 72),
-(1131, 150, 73),
-(1130, 150, 74);
+(1141, 153, 80),
+(1140, 153, 81),
+(1139, 153, 82),
+(1138, 153, 83),
+(1141, 154, 84),
+(1142, 154, 85);
 
 -- --------------------------------------------------------
 
@@ -820,18 +812,19 @@ CREATE TABLE IF NOT EXISTS `users` (
   `CourseName` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `Color` varchar(6) DEFAULT NULL,
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1134 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1144 ;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`UserID`, `GroupID`, `uName`, `pass`, `UserCurrentStatus`, `fName`, `sName`, `Address`, `Address2`, `City`, `county`, `Country`, `Email`, `Phone`, `Phone2`, `CollegeName`, `CourseName`, `Color`) VALUES
-(1129, NULL, 'lecturer', '040b7cf4a55014e185813e0644502ea9', 'lecturer', 'college', 'lecturer', 'here', 'there', 'everywhere', 'Sligo', NULL, 'lecturer@mail.itsligo.ie', '09647444', '0878574859', NULL, NULL, '441FFF'),
-(1130, NULL, 'cormac', '040b7cf4a55014e185813e0644502ea9', 'students', 'cormac', 'hallinan', '', '', '', 'Antrim', NULL, 's00129359@mail.itsligo.ie', '', '', NULL, NULL, '9059FF'),
-(1131, NULL, 'tomas', '040b7cf4a55014e185813e0644502ea9', 'students', 'tomas', 'McMahon', NULL, NULL, NULL, '', NULL, 's00126699@mail.itsligo.ie', NULL, NULL, NULL, NULL, NULL),
-(1132, NULL, 'John', '040b7cf4a55014e185813e0644502ea9', 'students', 'John', 'mcgowan', NULL, NULL, NULL, '', NULL, 'john@mail.itsligo.ie', NULL, NULL, NULL, NULL, NULL),
-(1133, NULL, 'greg', '040b7cf4a55014e185813e0644502ea9', 'students', 'greg', 'sheerin', '', '', '', 'Antrim', NULL, 'greg@mail.itsligo.ie', '', '', NULL, NULL, 'FFF70A');
+(1137, NULL, 'JohnK', 'a152e841783914146e4bcd4f39100686', 'lecturer', 'John ', 'Kelleher', '', '', 'sligo', 'Antrim', NULL, 'jk@mail.itsligo.ie', '', '', NULL, NULL, 'FF1745'),
+(1138, NULL, 'cormac', 'a152e841783914146e4bcd4f39100686', 'students', 'Cormac', 'Hallinan', '', '', '', 'Antrim', NULL, 's00129359@mail.itsligo.ie', '', '', NULL, NULL, '80FF00'),
+(1139, NULL, 'TomasMcM', 'a152e841783914146e4bcd4f39100686', 'students', 'Tomas', 'McMahon', NULL, NULL, NULL, '', NULL, 's00126699@mail.itsligo.ie', NULL, NULL, NULL, NULL, NULL),
+(1140, NULL, 'JohnMc', 'a152e841783914146e4bcd4f39100686', 'students', 'John', 'mcgowan', NULL, NULL, NULL, '', NULL, 'john@hotmail.com', NULL, NULL, NULL, NULL, NULL),
+(1141, NULL, 'Greg', 'a152e841783914146e4bcd4f39100686', 'students', 'Greg', 'sheerin', NULL, NULL, NULL, '', NULL, 'greg@ymail.com', NULL, NULL, NULL, NULL, NULL),
+(1142, NULL, 'jd', 'a152e841783914146e4bcd4f39100686', 'students', 'liam', 'mcgee', NULL, NULL, NULL, '', NULL, 's002938495@mail.itsligo.ie', NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Constraints for dumped tables

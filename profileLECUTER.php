@@ -158,10 +158,8 @@ if ($Id >= 1) {
               </div>
             </div>
             <div class="profileLstBx">
+            Groups
 <?php
-
-        
-
         $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo "<select class='form-control profilepageLstWidth' name='groupLst' size='5'></option>";
         foreach ($arrVal as $key => $val) {
@@ -170,23 +168,8 @@ if ($Id >= 1) {
             echo "<option value=$GroupID>$GroupName</option>"; 
           }
           echo "</select>";// Closing of list box
-          
-
-
 ?>
-<div clas="profileLstBx" style="float:left;">
-<h4>Projects</h4>
-<?
-     
-    echo "<select class='form-control profilepageLstWidth' name='groupLst' size='5'></option>";
-        foreach ($arrVal as $key => $val) {
-            $GroupID = $val['GroupID'];
-            $GroupName = $val['GroupName'];
-            echo "<option value=$GroupID>$GroupName</option>"; 
-          }
-          echo "</select>";
-		  ?>
-</div>
+
 
 
       

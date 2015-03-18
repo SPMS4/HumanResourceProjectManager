@@ -60,18 +60,24 @@
         $stmt->bindParam(':exColor', $color, PDO::PARAM_STR,6);
         $stmt->execute();
         $stmt->closeCursor();
+
+        //update tasks/events colour the user has created
+        $sql = 'CALL UpdateTaskEventColour(:exUserID, :exColor)';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);
+        $stmt->bindParam(':exColor', $color, PDO::PARAM_STR,6);
+        $stmt->execute();
+        $stmt->closeCursor();
+
         header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             exit;
-			} catch (Exception $e) {
+
+			} 
+		}
+			catch (Exception $e) {
        	echo $e->getMessage();
 				
 			}
-
-}
-
-
-
-	
 
 
 ?>
