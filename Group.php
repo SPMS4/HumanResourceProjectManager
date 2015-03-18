@@ -1,6 +1,6 @@
-
 <?php
-        require_once 'dbconfig.php';
+        try {
+            require_once 'dbconfig.php';
         //DB Connection
         $db = new PDO("mysql:host=$host;dbname=$dbname",
                             $username, $password);
@@ -10,6 +10,7 @@
         $Id=$_SESSION["Id"];
         $GroupId=$_SESSION["groupId"];
         
+        // if no group selected return to profile
         if ($GroupId == null) {
             header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             exit;
@@ -26,21 +27,24 @@
         $stmt->execute();
         //$stmt->closeCursor();
         $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // foreach ($arrVal as $key => $val) {
-        //    $taskId = $val['TaskEventID'];
-        //    $taskBackLog = $val['Backlog'];
-        //    $taskEndDate = $val['EndDate'];
-        //    $taskStartDate = $val['StartDate'];
-        //    $taskTitle = $val['Title'];
+                                                                // foreach ($arrVal as $key => $val) {
+                                                                //    $taskId = $val['TaskEventID'];
+                                                                //    $taskBackLog = $val['Backlog'];
+                                                                //    $taskEndDate = $val['EndDate'];
+                                                                //    $taskStartDate = $val['StartDate'];
+                                                                //    $taskTitle = $val['Title'];
 
-            //json_encode($taskTitle);
-            //json_encode($taskEndDate);
-            //json_encode($taskStartDate);
-        //}//end foreach for task
-        //json_encode($arrVal);
-        //json_encode($taskTitle);
-        //json_encode($taskEndDate);
-        //json_encode($taskStartDate);
+                                                                    //json_encode($taskTitle);
+                                                                    //json_encode($taskEndDate);
+                                                                    //json_encode($taskStartDate);
+                                                                //}//end foreach for task
+                                                                //json_encode($arrVal);
+                                                                //json_encode($taskTitle);
+                                                                //json_encode($taskEndDate);
+                                                                //json_encode($taskStartDate);
+
+        // put into array for json
+        //got from stack overflow example
         $jsData = [];
         foreach ($arrVal as $key => $val) {
         $jsData[] = [
@@ -61,6 +65,9 @@
         $stmt->execute();
         //$stmt->closeCursor();
         $arrVal1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // put into array for json
+        //got from stack overflow example
         $jsData1 = [];
         foreach ($arrVal1 as $key => $val) {
         $jsData1[] = [
@@ -71,14 +78,14 @@
         "eventEnd" => $val["EndDate"]
         ];
         }
-        //foreach ($arrVal1 as $key => $val) {
-        //    $eventId = $val['TaskEventID'];
-        //    $eventBackLog = $val['Backlog'];
-        //    $eventStartDate = $val['StartDate'];
-        //    $eventTitle = $val['Title'];
-        //    //echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
-       //}
-       //var_dump($arrVal1);
+                                                    //foreach ($arrVal1 as $key => $val) {
+                                                    //    $eventId = $val['TaskEventID'];
+                                                    //    $eventBackLog = $val['Backlog'];
+                                                    //    $eventStartDate = $val['StartDate'];
+                                                    //    $eventTitle = $val['Title'];
+                                                    //    //echo "<br/>$taskId $taskBackLog $taskEndDate $taskStartDate $taskTitle<br/>";
+                                                   //}
+                                                   //var_dump($arrVal1);
 
 
 
@@ -105,31 +112,26 @@
 
 
 if (isset($_POST['acceptbut'])) {
-// Start the session
-//session_start();
-		//  try {        
-         //INSERT SPROC
-        //$selectevent = $_POST['selectevent'];
+        
+         //vars for task/event       
         $taskEventTitle = $_POST['Title'];
         $backlog = $_POST['backlog'];
         if ($backlog == null) {
-        	$backlogResult = 0;
-        	echo "not backlog";
+            $backlogResult = 0;
+            echo "not backlog";
         }
         else{
-        	$backlogResult = 1;
+            $backlogResult = 1;
         }
 
         $taskEventStart = $_POST['Startdate'];
         $taskEventEnd = $_POST['Enddate'];
              //$dateToday = date("03-04-2015");
-			 $newStartDate = date("Y-m-d", strtotime($taskEventStart));
-			 $newEndDate = date("Y-m-d", strtotime($taskEventEnd));
+             $newStartDate = date("Y-m-d", strtotime($taskEventStart));
+             $newEndDate = date("Y-m-d", strtotime($taskEventEnd));
 
         
-        	//$color = $color['Color']; //Get colour from users table, column color
-        //$Id=$_SESSION["Id"];
-        //$num = 2;
+         // get users colour   
         $sqlCol = 'CALL UserColour (:exUserID, @iColor)';
         $stmt = $db->prepare($sqlCol);
         $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);
@@ -140,6 +142,7 @@ if (isset($_POST['acceptbut'])) {
         $color = $resuCol['col'];
         }  
 
+        //insert the task/event details
         $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exColor, @exNewId)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR, 50);
@@ -155,9 +158,10 @@ if (isset($_POST['acceptbut'])) {
         $TaskEventId = $resu['ID'];
         }
 
+        //note/url values
          $note = $_POST['Note'];
          $url = $_POST['Link'];
-
+         //insert not/url with the task/eventId from the one just entered
         $sql = 'CALL InsertNoteUrl0(:exTitle, :exTaskEventID, :exNote, :exLink)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $taskEventTitle, PDO::PARAM_STR,  50);
@@ -171,6 +175,8 @@ if (isset($_POST['acceptbut'])) {
             exit;
 
 }
+
+//update button
 if (isset($_POST['acceptbut1'])) {
 ///update task event-----------------------------------------------------------------------------------------------------
 //WE NEED TO EXECUTE THIS SRPOC TO UPDATE A TASKEVENT AFTER AN EVENT IS CLICKED AND POP UP DISPLAYS AND DATA IS CHANGED ABOUT
@@ -179,12 +185,12 @@ if (isset($_POST['acceptbut1'])) {
         $upTaskStart = $_POST['upStartDate'];
         $upTaskEnd = $_POST['upEndDate'];
              //$dateToday = date("03-04-2015");
-			 $newStartDate = date("Y-m-d", strtotime($upTaskStart));
-			 $newEndDate = date("Y-m-d", strtotime($upTaskEnd));
-		$taskEventID = $_POST['upId'];
-		$desc = "";
-			 
-
+             $newStartDate = date("Y-m-d", strtotime($upTaskStart));
+             $newEndDate = date("Y-m-d", strtotime($upTaskEnd));
+        $taskEventID = $_POST['upId'];
+        $desc = "";
+             
+//update task event
 $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exDesc, :exTaskEventID)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exTitle', $upTasktitle, PDO::PARAM_STR,  50);
@@ -213,6 +219,10 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
         header('Location: http://localhost/HumanResourceProjectManager/Group.php');
             exit;
     }
+        } catch (Exception $e) {
+        echo $e->getMessage();
+            
+        }
 
 ?>
 <form id="Group" action="Group.php" method="POST">
@@ -228,13 +238,32 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
 
 <body class="backgroundColorClass">
 <!--<body onload="addCalanderEvent('myEvent', 2015-02-19, 2015-02-22)">-->
-<?php 
-	include 'Header2.html'; 
 
-?>
+   <nav class="navbar navbar-static-top divColorClass" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" style="color:#fff">SMPS</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="index.php"  style="color:#fff">Home</a></li>
+            <li><a href="about.php" style="color:#fff" >About</a></li>
+            <li><a href="Profile.php" style="color:#fff">Profile</a></li>
+            <li><a href="Group.php" style="color:#fff">Manage a Group</a></li>                      
+</ul>
+</div>
+</div>
+</nav>
 
 
-<div align="center" id='Project Desc' style="ParaHeadFontColor">
+
+<div align="center" id='Project Desc' style="ParaHeadFontColor divColorClass">
 	<h1 style="color:#fff"><?php echo "$prjName";?></h1>
 	<p style="color:#fff"> <?php echo "$prjDesc";?></p>
 
@@ -258,23 +287,17 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
 		</div>
 		<div id='Students' style="color:#000;">
 
-			<h4>students</h4>
+			<h4 style="color:#fff;">students</h4>
 				<!--<select name="Students" size="4" style="width: 110px; overflow:hidden;" >-->
 			<?php
-         require_once 'dbconfig.php';
-
-        // $db = new PDO("mysql:host=$host;dbname=$dbname",
-       //            $username, $password);
-       // $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        
-
+       
+            //get all students in group
         $sql = 'CALL StudentsinGroup0(:exGroupID)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exGroupID', $GroupId, PDO::PARAM_INT);     
         $stmt->execute();
-       // $stmt->closeCursor();
-
+       
+        //populate and display listbox
         $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo "<select name='Students' size='4' style='width: 110px; overflow:hidden;'></option>";
 
@@ -337,7 +360,7 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
 		<label id="lbendtime" for="endTimepicker" > End Time:</label>
 		<aside><input  type="text" id="endTimepicker" name="endTimepicker" style="visability:hidden;" placeholder="am/pm"></aside>
 -->
-			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut"  style="" onclick="addCalanderTask()"   value="Accept0" />
+			<input type="submit" id="acceptbut" class="btn btn-info" name="acceptbut"  style="" onclick="addCalanderTask()"   value="Accept" />
 
 
 
@@ -431,7 +454,7 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
 <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
 <link href="Css/CalCss.css" rel="stylesheet" />
 <link href="Css/datepicker.css" rel="stylesheet" />
-<link href="bootstrap/css/bootstrap.css" rel="stylesheet" />
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
 <link href="Css/jquery.timepicker.css" rel="stylesheet" />
 <script src="lib/moment.min.js"></script>
 <script src="lib/jquery.min.js"></script>
@@ -442,6 +465,8 @@ $sql = 'CALL UpdateTaskEvent0(:exTitle, :exBacklog, :exStartDate, :exEndDate, :G
 <script src="bootstrap/js/bootstrap.js"></script>
 <script src='Calender/CalCustom.js'></script>
 <script src="Calender/jquery.timepicker.js"></script>
+<link href="css/SMPMccs.css" rel="stylesheet" type="text/css" />
+<script  src="js/bootstrap.min.js"></script>
 
 <!--<link href="Calender/jquery-ui-Datepicker/jquery-ui.css" rel="stylesheet">-->
 <!--<script rel="stylesheet" src="Css/CalCass.Css"></script>-->
@@ -502,3 +527,5 @@ var data = <?php echo json_encode($jsData1) ?>;
 </script>
 </html>
 </form>
+
+

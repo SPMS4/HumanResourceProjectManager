@@ -51,12 +51,13 @@
 	#Students {
 		float: left;
 		width: 150px;
+		height: 150px;
 		padding: 0 10px;
 		border: 1px solid #ccc;
 		background: #eee;
 		text-align: left;
 		position: absolute;
-		bottom: -70px;
+		bottom: 70px;
 		background-color:#52419C;
 	}
 
@@ -175,4 +176,8 @@
 	}
 	.popupdrop form div{float:left; width:80px; text-align:left;}
 	.popupdrop form input{float:left; text-align:left;}
+
+	ul:hover { 
+    background-color: #52419C;
+}
 </style>

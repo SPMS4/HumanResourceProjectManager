@@ -13,6 +13,7 @@ session_start();
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         $USERNAME = $_POST['LIUsernameTXT'];
+        //secure password
         $PASSWORD = md5($_POST['LIPasswordTXT']);
         
        // $sql = "SELECT UserID, uName, pass
@@ -34,12 +35,13 @@ session_start();
       }
 
 
-        //if($log->rowCount() == 1)
+        
         if($nmes == 1)
         {
         	echo "logged in";
             
-
+          //get the ID of the username entered
+          //this then keeps the user logged in
           	$sql = "SELECT *
                 FROM users 
                 where uName='".$USERNAME."'";
@@ -47,6 +49,7 @@ session_start();
         foreach ($db->query($sql) as $data) {
           $Id = $data['UserID'];
         }
+        //set session
             $_SESSION["Id"] = $Id;
 
             header('Location: http://localhost/HumanResourceProjectManager/profile.php');
@@ -55,8 +58,6 @@ session_start();
         else
             $logAttempt = 1;
 
-        //Close Connection
-        $db = null;
 
     } catch(PDOException $e) {
         echo $e->getMessage();

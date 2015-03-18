@@ -1,6 +1,7 @@
 <?php
 
-require_once 'dbconfig.php';
+try {
+  require_once 'dbconfig.php';
     $db = new PDO("mysql:host=$host;dbname=$dbname",
                             $username, $password);
 
@@ -24,34 +25,47 @@ if ($Id >= 1) {
           $Email=$data['Email'];
           $county=$data['county'];
         }
-
+        //redirect a student
         if ($UserCurrentStatus == "students") {
           header('Location: http://localhost/HumanResourceProjectManager/profileLECUTER.php');
             exit;
         }
+        //get groups a lecturer in
+        $sql = 'CALL SelectGroupsForLecturer(:exUserID)';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);     
+        $stmt->execute();
 
-        if (isset($_POST['submit'])) 
+        //to view a group calendar
+         if (isset($_POST['submit'])) 
           {
+            //get the group selected in the listbox
             $selected = $_POST['groupLst'];
+            //remove the previous group from the sessions
             unset($_SESSION['groupId']);
-            //then
+            //then add new session and redirect
             $_SESSION["groupId"] = "$selected";
             header('Location: http://localhost/HumanResourceProjectManager/Group.php');
             exit; 
           }
 
-          if (isset($_POST['logOut'])) 
+          //to log out
+        if (isset($_POST['logOut'])) 
           {
-            echo "hi";
+            //kill session and redirect
             unset($_SESSION['Id']);
             header('Location: http://localhost/HumanResourceProjectManager/login.php');
-            exit;
+            exit; 
           }
         }
         else{
           header('Location: http://localhost/HumanResourceProjectManager/login.php');
             exit;
         }
+} catch (Exception $e) {
+  header('Location: http://localhost/HumanResourceProjectManager/login.php');
+        echo $e->getMessage();
+}
  
 
 
@@ -67,6 +81,7 @@ if ($Id >= 1) {
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="css/pageposition.css">
   <link href="css/Borders.css" rel="stylesheet" type="text/css">
+    <link href="css/SMPMccs.css" rel="stylesheet" type="text/css">
    <!--<link href="css/SMPMccs.css" rel="stylesheet" type="text/css">-->
   <script src="js/jquery-1.11.1.js"></script>
 
@@ -144,21 +159,11 @@ if ($Id >= 1) {
             </div>
             <div class="profileLstBx">
 <?php
-if(!isset($_SESSION)) 
-          { 
-          session_start(); 
-          } 
-         $db = new PDO("mysql:host=$host;dbname=$dbname",
-                   $username, $password);
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $sql = 'CALL SelectGroupsForLecturer(:exUserID)';
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);     
-        $stmt->execute();
+        
 
         $arrVal = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo "<select class='form-control' name='groupLst' size='5'></option>";
+    echo "<select class='form-control profilepageLstWidth' name='groupLst' size='5'></option>";
         foreach ($arrVal as $key => $val) {
             $GroupID = $val['GroupID'];
             $GroupName = $val['GroupName'];
@@ -169,6 +174,21 @@ if(!isset($_SESSION))
 
 
 ?>
+<div clas="profileLstBx" style="float:left;">
+<h4>Projects</h4>
+<?
+     
+    echo "<select class='form-control profilepageLstWidth' name='groupLst' size='5'></option>";
+        foreach ($arrVal as $key => $val) {
+            $GroupID = $val['GroupID'];
+            $GroupName = $val['GroupName'];
+            echo "<option value=$GroupID>$GroupName</option>"; 
+          }
+          echo "</select>";
+		  ?>
+</div>
+
+
       
             </div>          
       <input type="submit" class="btn btn-info" name="submit" value="view group" />

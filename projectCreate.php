@@ -1,5 +1,6 @@
 <?php
-session_start();
+try {
+  session_start();
   $Id=$_SESSION["Id"];
     require_once 'dbconfig.php';
 
@@ -11,11 +12,11 @@ if (isset($_POST['submit']))
                             $username, $password);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-	 	  //declare vars
-    	$projectName = $_POST['ProjectName'];
-		  $projectStart = $_POST['startDate'];
-		  $projectEnd = $_POST['endDate'];
-		  $projectDesc = $_POST['projectDescription'];
+      //declare vars
+      $projectName = $_POST['ProjectName'];
+      $projectStart = $_POST['startDate'];
+      $projectEnd = $_POST['endDate'];
+      $projectDesc = $_POST['projectDescription'];
       echo "$projectName";
       try{    
         $sql = 'CALL InsertProject(:proName, :proStart, :proEnd, :proDescription)';
@@ -41,25 +42,32 @@ if (isset($_POST['submit']))
     
 }
 include 'Header2.html'; 
+} catch (Exception $e) {
+        echo $e->getMessage();
+  
+}
 
 ?>
+<link href="css/SMPMccs.css" rel="stylesheet" type="text/css" />
+
 
 <form action="projectCreate.php" method="post">
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="css/pageposition.css">
   <link href="css/Borders.css" rel="stylesheet" type="text/css">
+   <link href="css/SMPMccs.css" rel="stylesheet" type="text/css">
   <link href="../css/Sidebar.css" rel="stylesheet" type="text/css">
   <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="css/Sidebar.css" rel="stylesheet" type="text/css">
   <script src="js/jquery-1.11.1.js"></script>
       <script src="js/select2-3.5.2/select2.js"></script>
     <link rel="stylesheet" href="js/select2-3.5.2/select2.css">
-
+<body class="backgroundColorClass">
   
      
-            <div class="jumbotron" style="background-color:#FFF">
-                 <h2 align="center">Project Details</h2>
+            <div class=" ParaHeadFontColor">
+                 <h2 align="center" style="color:#fff">Project Details</h2>
                  <form>
              <div class="row">
   <div class="col-lg-6" align="center">
@@ -87,7 +95,7 @@ include 'Header2.html';
       <br>
       <br>
            <div align="center">
-           <div class="form-group">
+           <div class="form-group ">
     <label for="name">Project Description</label>
     <textarea class="form-control" name="projectDescription" style="width:70%" rows="3"></textarea>
            </div>      

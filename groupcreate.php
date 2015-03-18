@@ -16,7 +16,7 @@ $sql = "SELECT UserCurrentStatus
     $stat = $status['UserCurrentStatus'];
     }
     
-
+//must be lecturer to access this page
 if ($stat == "lecturer") {
 
   if (isset($_POST['submit'])) 
@@ -26,7 +26,7 @@ if ($stat == "lecturer") {
     $groupProject = $_POST['projectName'];
 
 
-    
+        //the group name must be unique
         $sqlCheck = 'CALL CountGroups(:exgroupname, @groups)';
         $stmtCheck = $db->prepare($sqlCheck);
         $stmtCheck->bindParam(':exgroupname', $groupName, PDO::PARAM_STR, 50);
@@ -36,7 +36,7 @@ if ($stat == "lecturer") {
         if ($resu) {
         $nme = $resu['name'];
       }
-
+      //if it is unique
     if($nme==0)
     {
       //not taken
@@ -65,11 +65,11 @@ if ($stat == "lecturer") {
                       FROM groups 
                       where GroupName='".$groupName."'"; 
 
-
+             //get the id of the group created         
             foreach ($db->query($getGroup) as $id) {
             $GId = $id['GroupID'];
             }
-
+             //insert into link table usergroup
              $queryInsert = "
              INSERT INTO usergroup (GroupID, UserID)
                             VALUES ('".$GId."', '".$UId."')
@@ -119,6 +119,7 @@ include 'Header2.html';
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="css/pageposition.css">
   <link href="css/Borders.css" rel="stylesheet" type="text/css">
+   <link href="css/SMPMccs.css" rel="stylesheet" type="text/css">
   <link href="../css/Sidebar.css" rel="stylesheet" type="text/css">
   <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="css/Sidebar.css" rel="stylesheet" type="text/css">
@@ -142,7 +143,7 @@ include 'Header2.html';
   </style>
 
 </head>
-<body>
+<body class="backgroundColorClass ParaHeadFontColor">
   <!--Header do not add to this div, add any content in the header.html file in the same folder,
   remember this changes all headers -->
 
@@ -151,18 +152,18 @@ include 'Header2.html';
 
  
         
-            <div id="grouppos" class="jumbotron" style="text-align:center">
-                 <h2 align="center">Group Details</h2>
+            <div id="grouppos" class=" ParaHeadFontColor" style="text-align:center">
+                 <h2 align="center" style="color:#fff">Group Details</h2>
                  <form>
-             <div class="row" style="text-align:center">
+             <div class="row" style="text-align:center;">
   <div class="col-lg-6" align="center">
     <div class="input-group" align="center">
       Select a Project<br>
+      <div class="profileReadableColor">
       <?php
-         require_once 'dbconfig.php';
+         
 
-          $db = new PDO("mysql:host=$host;dbname=$dbname",
-                            $username, $password);
+          // list box with all the created projects by lecturers
           $sql="SELECT ProjectName,ProjectID FROM project order by ProjectName"; 
           echo "<select name=projectName value=''>Project Name</option>";
          // echo "<select>";
@@ -171,19 +172,21 @@ include 'Header2.html';
           }
           echo "</select>";// Closing of list box
           ?>
+          </div>
     </div>
     
   <div align="center">
   select Students <br/>
+  <div class="profileReadableColor">
     <?php
-         require_once 'dbconfig.php';
-
-          $db = new PDO("mysql:host=$host;dbname=$dbname",
-                            $username, $password);
+         
+         //select2 which adds stuents to the group
+         //you can search students from their email
           $sql="SELECT Email, UserID FROM users WHERE UserCurrentStatus = 'students'  order by Email"; 
           echo "<select class='js-example-basic-multiple' multiple='multiple' size='2' name='ary[]'' value=''>User Name</option>";
-         // echo "<select>";
+         
           foreach ($db->query($sql) as $row){
+            //populate select2 selectbox
           echo "<option value=$row[UserID]>$row[Email]</option>"; 
           $UserIdSelected = $row['UserID'];
           if (isset($_POST['submit'])) 
@@ -191,11 +194,12 @@ include 'Header2.html';
     echo "<br/>userId I slected = $UserIdSelected";
   }
           }
-          echo "</select>";// Closing of list box
+          echo "</select>";// Closing of select2 selectbox
           if (isset($_POST['submit'])) 
   {echo "<br/>userId O slected = $UserIdSelected";
   }
           ?>
+          </div>
     </div>
     
     </div><!-- /input-group -->

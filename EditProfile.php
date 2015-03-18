@@ -1,6 +1,8 @@
 <?php
 
-			session_start();
+			try {
+				//get id of uder logged in
+				session_start();
 			$Id=$_SESSION["Id"];
 
         require_once 'dbconfig.php';
@@ -12,7 +14,7 @@
 			$sql = "SELECT *
                 FROM users 
                 where UserID=$Id"; 
-
+                // get all the data from the user that is logged in
 			foreach ($db->query($sql) as $data) {
           $Id = $data['UserID'];
           $ufName = $data['fName'];
@@ -30,8 +32,8 @@
 
 	if (isset($_POST['submit'])) 
 {
-	
-			//declare vars
+			
+			//declare vars and get data in the list boxes
 			$fName = ($_POST['FirstnameTXT']);
 			$lName = ($_POST['SecondnameTXT']);
 			$address1 = ($_POST['Address1TXT']);
@@ -42,7 +44,7 @@
 			$phone = ($_POST['Phone1TXT']);
 			$phone2 = ($_POST['Phone2TXT']);
 			$color = ($_POST['ColorTXT']);
-
+			//UPDATE THE data
 		$sql = 'CALL UpdateProfile(:exUserID, :exfName, :exsName, :exAddress, :exAddress2, :exCity, :exCountry, :exCounty, :exPhone, :exPhone2, :exColor)';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':exUserID', $Id, PDO::PARAM_INT);
@@ -60,6 +62,10 @@
         $stmt->closeCursor();
         header('Location: http://localhost/HumanResourceProjectManager/profile.php');
             exit;
+			} catch (Exception $e) {
+       	echo $e->getMessage();
+				
+			}
 
 }
 
@@ -72,9 +78,8 @@
 <link href="css/SMPMccs.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
 
-
-<form action="EditProfile.php" method="post">
 <?php include 'header2.html' ?>
+<form action="EditProfile.php" method="post">
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
   <script src="js/jquery-1.11.1.js"></script>
   <script src="js/select2-3.5.2/select2.js"></script>
@@ -82,15 +87,11 @@
   <body class="backgroundColorClass">
 <div>
 
-<div align="center" class="divColorClass">
+<div align="center">
 	
-	<h3><b>Personal Details</b></h3>
-	<div class="input-group">
-	  <p align="center">
-	    <label><b>First Name</b>:</label>
       
       <div class="row ParaHeadFontColor">
-    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+    <div class="col-xs-12 col-sm-6 col-md-6 col-sm-offset-2 col-md-offset-3">
 		<form role="form">
 			<h2 align="center">Edit your profile</h2>
 			<hr class="colorgraph">
@@ -107,22 +108,22 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<input placeholder="First Name" id="FirstNametbx" value="<?php echo "$ufName"; ?>" name="FirstnameTXT" type="text" class="form-control">
+				<input placeholder="First Name" class="form-control"                  id="FirstNametbx" value="<?php echo "$ufName"; ?>" name="FirstnameTXT" type="text" >
 			</div>
             <div class="form-group">
-				<input placeholder="Last Name" id="Secondnametbx" value="<?php echo "$usName"; ?>" name="SecondnameTXT" type="text" class="form-control">
+				<input placeholder="Last Name" class="form-control" id="Secondnametbx" value="<?php echo "$usName"; ?>" name="SecondnameTXT" type="text" >
 			</div>
             <div class="form-group">
-				 <input placeholder="Address 1" id="Address1tbx" value="<?php echo "$uAddress"; ?>" name="Address1TXT" type="text" class="form-control">
+				 <input placeholder="Address 1" class="form-control" id="Address1tbx" value="<?php echo "$uAddress"; ?>" name="Address1TXT" type="text">
 			</div>
             <div class="form-group">
-				<input placeholder="Address 2" id="Address2tbx" value="<?php echo "$uAddress2"; ?>" name="Address2TXT" type="text" class="form-control">
+				<input placeholder="Address 2" class="form-control" id="Address2tbx" value="<?php echo "$uAddress2"; ?>" name="Address2TXT" type="text">
 			</div>
             <div class="form-group">
-				 <input placeholder="City/town" id="CityTowntbx" value="<?php echo "$ucity"; ?>" name="CityTownTXT" type="text" class="form-control">
+				 <input placeholder="City/town" class="form-control" id="CityTowntbx" value="<?php echo "$ucity"; ?>" name="CityTownTXT" type="text">
 			</div>
              <div class="form-group">
-				<select class="js-example-basic-single regpageSelectWidth" id="Countyslct" value="<?php echo "$ucounty"; ?>" name="CountySLCT">
+				<select class="js-example-basic-single" style="width:655px" id="Countyslct" value="<?php echo "$ucounty"; ?>" name="CountySLCT">
 	      <option value="Antrim">Antrim</option>
 	      <option value="Armagh">Armagh</option>
 	      <option value="Carlow">Carlow</option>
@@ -158,7 +159,7 @@
         </select>
 			</div>
              <div class="form-group">
-				<select class="js-example-basic-single regpageSelectWidth" value="<?php echo "$country"; ?>" id="Countryslct" name="CountrySLCT">
+				<select class="js-example-basic-single" style="width:655px" value="<?php echo "$country"; ?>" id="Countryslct" name="CountrySLCT">
 	      <option value="Ireland">Ireland</option>
 	      <option value="Englang">England</option>
 	      <option value="France">France</option>
@@ -167,13 +168,13 @@
 			<div class="form-group">
 			</div>
             	<div class="form-group">
-				   <input placeholder="Phone" id="Phonetbx" value="<?php echo "$uPhone"; ?>" name="Phone1TXT" type="text" class="form-control">
+				   <input placeholder="Phone" class="form-control" id="Phonetbx" value="<?php echo "$uPhone"; ?>" name="Phone1TXT" type="text" >
 			</div>
             	<div class="form-group">
-				<input placeholder="Mobile" id="Phonetbx" value="<?php echo "$uPhone2"; ?>" name="Phone2TXT" type="text" class="form-control">
+				<input placeholder="Mobile" class="form-control" id="Phonetbx" value="<?php echo "$uPhone2"; ?>" name="Phone2TXT" type="text">
 			</div>
 			<div class="form-group">
-				  <input  id="Colortbx" name="ColorTXT" type="text" value="<?php echo "$uColor"; ?>" class="form-control color">
+				  <input  id="Colortbx"  class="form-control color" name="ColorTXT" type="text" value="<?php echo "$uColor"; ?>">
 			</div> 
 				
 				

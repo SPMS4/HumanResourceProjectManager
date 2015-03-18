@@ -1,7 +1,11 @@
 <?php
 
 
-	if (isset($_POST['submit'])) 
+	try {
+	$regAttempt = 0;
+	$passAttempt = 0;
+
+		if (isset($_POST['submit'])) 
 {
 	
         require_once 'dbconfig.php';
@@ -79,10 +83,17 @@
             exit;
 			}
 			else{
-				echo "Name taken";
+				$regAttempt = 1;
 			}
 		}
+		else{
+			$passAttempt = 1;
+		}
 
+	}
+	} catch (Exception $e) {
+       	echo $e->getMessage();
+		
 	}
 
 
@@ -235,6 +246,11 @@
 				<div class="col-xs-12 col-sm-6 col-md-6">
 					<div class="form-group">
                           <input placeholder="Username" id="Usernametbx" name="UsernameTXT" type="text" class="form-control" required>
+                          <label name="uNameTaken"><?php 
+                          //if username taken
+                          if ($regAttempt >= 1) {
+                                           echo "username taken";
+                                       } ?></label>
 					</div>
                     <div class="form-group">
                         <input placeholder="Password" id="Passwordtbx" name="PasswordTXT" type="password" class="form-control" pattern=".{6,}" title="Password must have atleast 6 characters" required>
@@ -246,7 +262,11 @@
 				<div class="col-xs-12 col-sm-6 col-md-6">
 					
                    <input placeholder="Re-Password" id="RePasswordtbx" name="RePasswordTXT" type="password" class="form-control" required>
-                   
+                   <label name="uNameTaken"><?php 
+                   //if passwords dont match
+                          if ($passAttempt >= 1) {
+                                           echo "passwords not matching";
+                                       } ?></label>
 				</div>
 			</div>
 			<div class="form-group">

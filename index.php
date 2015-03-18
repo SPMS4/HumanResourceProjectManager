@@ -83,7 +83,7 @@
     <div class="item active">
       <img src="img/Image two.jpg" alt="...">
       <div class="carousel-caption">
-          <h3>HRPM</h3>
+          <h3>Smps</h3>
           <p>Making project and people manmage simple</p>
       </div>
     </div>
@@ -91,14 +91,14 @@
       <img src="img/Image three.jpg" alt="...">
       <div class="carousel-caption">
           <h3>Want to simply your group management?</h3>
-          <p>Click Register</p>
+          
       </div>
     </div>
     <div class="item">
       <img src="img/Image one.jpg" alt="...">
       <div class="carousel-caption">
-          <h3>Rated 10/10 by snoop dogg</h3>
-          <p>"Its ok"</p>
+          <h3>Easy for anyone to use</h3>
+          
       </div>
     </div>
   </div>
