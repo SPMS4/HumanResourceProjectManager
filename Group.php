@@ -142,6 +142,9 @@ if (isset($_POST['acceptbut'])) {
         $color = $resuCol['col'];
         }  
 
+        if ($color == null) {
+            $color = "000";
+        }
         //insert the task/event details
         $sql = 'CALL InsertTaskEvent(:exTitle, :exBacklog, :exStartDate, :exEndDate, :GroupID, :exUserID, :exColor, @exNewId)';
         $stmt = $db->prepare($sql);
